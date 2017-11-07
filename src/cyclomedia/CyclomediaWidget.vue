@@ -1,6 +1,7 @@
 <template>
   <div class="mb-root row collapse"
-       :style="this.$config.rootStyle"
+       id="mb-root"
+       :style="styleObject"
   >
     <div id="cyclo-container"
          :class="this.cycloContainerClass"
@@ -15,6 +16,22 @@
 
 <script>
   export default {
+    data() {
+      const data = {
+        styleObject: {
+          'position': 'relative',
+          // 'top': '86px',
+          // 'overflow-y': 'auto',
+          'width': '100%',
+          'height': '100%'
+          // 'height': null
+        }
+      };
+      return data;
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.handleWindowResize);
+    },
     computed: {
       pictometryActive() {
         return this.$store.state.pictometry.active
@@ -42,6 +59,9 @@
       }
     },
     mounted() {
+      window.addEventListener('resize', this.handleWindowResize);
+      this.handleWindowResize();
+
       StreetSmartApi.init({
         username: this.$config.cyclomedia.username,
         password: this.$config.cyclomedia.password,
@@ -95,6 +115,16 @@
         const viewer = this.$store.state.cyclomedia.viewer;
         viewer.openByCoordinate(coords);
       },
+      handleWindowResize() {
+        const rootElement = document.getElementById('application');
+        const rootStyle = window.getComputedStyle(rootElement);
+        const rootHeight = rootStyle.getPropertyValue('height');
+        const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+        const topicsHeight = rootHeightNum - 76;
+        console.log('handleWindowResize is running, rootElement:', rootElement, 'rootStyle', rootStyle, 'rootHeight:', rootHeight, 'rootHeightNum', rootHeightNum);
+        this.styleObject.height = topicsHeight.toString() + 'px';
+        // this.styleObject.height = '100%';
+      }
     }
   };
 </script>
@@ -106,18 +136,6 @@
   textarea:focus,
   button:focus {
     outline: none;
-  }
-
-  @media (min-width: 1024px) {
-    .mb-root {
-      height: 600px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .mb-root {
-      height: 600px;
-    }
   }
 
   .mb-panel {

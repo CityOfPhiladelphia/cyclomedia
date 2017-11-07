@@ -1,3 +1,8 @@
 header.site-header > .row:last-of-type {
     background: #2176d2;
 }
+
+html, body, #application {
+  height: 100%;
+  overflow-y: hidden;
+}

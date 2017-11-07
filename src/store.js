@@ -5,33 +5,9 @@ import Vuex from 'vuex';
 // Vue.use(Vuex);
 
 function createStore(config) {
-  const defaultTopic = config.topics[0];
-
-  // create initial state for sources. data key => {}
-  const sourceKeys = Object.keys(config.dataSources || {});
-  const sources = sourceKeys.reduce((o, key) => {
-    let val;
-    // if the source has targets, just set it to be an empty object
-    if (config.dataSources[key].targets) {
-      val = {
-        targets: {}
-      };
-    } else {
-      val = {
-       // we have to define these here, because vue can't observe properties that
-       // are added later.
-       status: null,
-       data: null
-     };
-    }
-
-    o[key] = val;
-
-    return o;
-  }, {});
 
   const initialState = {
-    activeTopic: defaultTopic.key,
+    // activeTopic: defaultTopic.key,
     // the ais feature
     geocode: {
       status: null,
@@ -43,7 +19,7 @@ function createStore(config) {
       zoom: config.map.zoom,
       map: null,
       bounds: null,
-      basemap: defaultTopic.basemap,
+      // basemap: defaultTopic.basemap,
       // features: {
       //   markers: [
       //     // {
@@ -59,7 +35,7 @@ function createStore(config) {
     },
     dorParcels: [],
     pwdParcel: null,
-    sources,
+    // sources,
     cyclomedia: {
       active: false,
       viewer: null,
