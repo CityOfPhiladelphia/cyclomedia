@@ -80,9 +80,12 @@
 
           // get map center and set location
           const map = this.$store.state.map.map;
+          const parameterString = window.location.search;
+          const parameters = parameterString.split('&');
+          // console.log('parameterString', parameterString, 'parameters', parameters[0].substring(1), parameters[1]);
           const center = {
-            lat: 39.95343802330849,
-            lng: -75.16347885131837
+            lat: parseFloat(parameters[0].substring(1)),
+            lng: parseFloat(parameters[1])
           }
           // const center = map.getCenter();
           this.setNewLocation([center.lng, center.lat]);
