@@ -44,6 +44,9 @@ export default (clientConfig) => {
         vm.$eventBus.$on(eventName, callback);
       }
 
+      const sharedObject = window.opener.sharedObject;
+      console.log('sharedObject', sharedObject);
+
       // event api for host apps
       // this doesn't work now that we're getting the base config
       // asynchronously. see above for workaround.

@@ -121,7 +121,7 @@
         const rootHeight = rootStyle.getPropertyValue('height');
         const rootHeightNum = parseInt(rootHeight.replace('px', ''));
         const topicsHeight = rootHeightNum - 76;
-        console.log('handleWindowResize is running, rootElement:', rootElement, 'rootStyle', rootStyle, 'rootHeight:', rootHeight, 'rootHeightNum', rootHeightNum);
+        // console.log('handleWindowResize is running, rootElement:', rootElement, 'rootStyle', rootStyle, 'rootHeight:', rootHeight, 'rootHeightNum', rootHeightNum);
         this.styleObject.height = topicsHeight.toString() + 'px';
         // this.styleObject.height = '100%';
       }
