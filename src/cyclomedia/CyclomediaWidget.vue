@@ -83,9 +83,17 @@
           const parameterString = window.location.search;
           const parameters = parameterString.split('&');
           // console.log('parameterString', parameterString, 'parameters', parameters[0].substring(1), parameters[1]);
-          const center = {
-            lat: parseFloat(parameters[0].substring(1)),
-            lng: parseFloat(parameters[1])
+          let center = {}
+          if (parameterString ==='') {
+            center = {
+              lat: 39.953338,
+              lng: -75.163471
+            }
+          } else {
+            center = {
+              lat: parseFloat(parameters[0].substring(1)),
+              lng: parseFloat(parameters[1])
+            }
           }
           // const center = map.getCenter();
           this.setNewLocation([center.lng, center.lat]);
