@@ -1,3 +1,5 @@
+console.log = console.info = console.debug = console.error = function () {};
+
 const GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
 
 Mapboard.default({
