@@ -52,12 +52,12 @@
         }
       }
     },
-    watch: {
-      locForCyclo(coords){
-        // console.log(coords);
-        this.setNewLocation(coords);
-      }
-    },
+    // watch: {
+    //   locForCyclo(coords){
+    //     // console.log(coords);
+    //     this.setNewLocation(coords);
+    //   }
+    // },
     mounted() {
       window.addEventListener('resize', this.handleWindowResize);
       this.handleWindowResize();
@@ -77,7 +77,7 @@
         () => {
           const cycloDiv = this.$refs.cycloviewer;
           const viewer = StreetSmartApi.addPanoramaViewer(cycloDiv, {recordingsVisible: true, timeTravelVisible: true});
-          this.$store.commit('setCyclomediaViewer', viewer);
+          // this.$store.commit('setCyclomediaViewer', viewer);
 
           // get map center and set location
           const map = this.$store.state.map.map;
@@ -97,7 +97,8 @@
             }
           }
           // const center = map.getCenter();
-          this.setNewLocation([center.lng, center.lat]);
+          // this.setNewLocation([center.lng, center.lat]);
+          viewer.openByCoordinate([center.lng, center.lat]);
 
           // TODO bind CN events to vue
           // viewer.on(StreetSmartApi.Events.panoramaViewer.VIEW_CHANGE, e => {
@@ -118,14 +119,14 @@
     },
     updated() {
       // TODO find a better way to get the image to update and not be stretched
-      const viewer = this.$store.state.cyclomedia.viewer;
-      viewer.rotateRight(0.0000001);
+      // const viewer = this.$store.state.cyclomedia.viewer;
+      // viewer.rotateRight(0.0000001);
     },
     methods: {
       setNewLocation(coords) {
-        // console.log('setNewLocation is running using', coords);
-        const viewer = this.$store.state.cyclomedia.viewer;
-        viewer.openByCoordinate(coords);
+        console.log('setNewLocation is running using', coords);
+        // const viewer = this.$store.state.cyclomedia.viewer;
+        // viewer.openByCoordinate(coords);
       },
       handleWindowResize() {
         const rootElement = document.getElementById('application');
