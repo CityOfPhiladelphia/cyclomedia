@@ -63,6 +63,7 @@
       this.handleWindowResize();
 
       StreetSmartApi.init({
+        targetElement: this.$refs.cycloviewer,
         username: this.$config.cyclomedia.username,
         password: this.$config.cyclomedia.password,
         apiKey: this.$config.cyclomedia.apiKey,
