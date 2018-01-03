@@ -76,8 +76,6 @@
       }).then(
         () => {
           const cycloDiv = this.$refs.cycloviewer;
-          // const viewer = StreetSmartApi.addPanoramaViewer(cycloDiv, {recordingsVisible: true, timeTravelVisible: true});
-          // this.$store.commit('setCyclomediaViewer', viewer);
 
           // get map center and set location
           const map = this.$store.state.map.map;
@@ -94,8 +92,6 @@
             center = {
               lat: parameters[0].substring(1),
               lng: parameters[1]
-              // lat: parseFloat(parameters[0].substring(1)),
-              // lng: parseFloat(parameters[1])
             }
           }
 
@@ -104,6 +100,7 @@
           StreetSmartApi.open(center.lng + ',' + center.lat, {
             viewerType: viewerType,
             srs: 'EPSG:4326',
+            closable: false
           }).then(
             function(result) {
               console.log('Created component through API:', result);
