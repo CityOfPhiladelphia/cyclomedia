@@ -96,6 +96,7 @@
           }
 
           const viewerType = StreetSmartApi.ViewerType.PANORAMA
+          // const viewerType = StreetSmartApi.ViewerType.OBLIQUE
 
           StreetSmartApi.open(center.lng + ',' + center.lat, {
             viewerType: viewerType,
@@ -108,6 +109,13 @@
                 for (let i =0; i < result.length; i++) {
                   if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) window.panoramaViewer = result[i];
                 }
+                StreetSmartApi.removeOverlay('surfaceCursorLayer');
+                StreetSmartApi.removeOverlay('measurementLayer');
+                window.panoramaViewer.toggleButtonEnabled('panorama.measure', false);
+                window.panoramaViewer.toggleNavbarExpanded(false);
+                // window.panoramaViewer.on('VIEW_CHANGE', function() {
+                //   console.log('on VIEW_CHANGE fired');
+                // })
               }
             }.bind(this)
           ).catch(
