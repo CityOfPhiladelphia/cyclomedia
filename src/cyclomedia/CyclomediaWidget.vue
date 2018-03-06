@@ -109,10 +109,22 @@
                 for (let i =0; i < result.length; i++) {
                   if(result[i].getType() === StreetSmartApi.ViewerType.PANORAMA) window.panoramaViewer = result[i];
                 }
-                StreetSmartApi.removeOverlay('surfaceCursorLayer');
+                window.panoramaViewer.toggleButtonEnabled('panorama.elevation', false);
+                window.panoramaViewer.toggleButtonEnabled('panorama.reportBlurring', false);
+                // StreetSmartApi.removeOverlay('surfaceCursorLayer');
                 StreetSmartApi.removeOverlay('measurementLayer');
                 window.panoramaViewer.toggleButtonEnabled('panorama.measure', false);
                 window.panoramaViewer.toggleNavbarExpanded(false);
+
+                for (let overlay of window.panoramaViewer.props.overlays) {
+                  // console.log('overlay:', overlay);
+                  if (overlay.id === 'surfaceCursorLayer') {
+                    if (overlay.visible === true) {
+                      window.panoramaViewer.toggleOverlay(overlay);
+                      // overlay.visible = false;
+                    }
+                  }
+                }
                 // window.panoramaViewer.on('VIEW_CHANGE', function() {
                 //   console.log('on VIEW_CHANGE fired');
                 // })
