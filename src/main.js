@@ -1,67 +1,135 @@
-import Vue from 'vue';
-import createStore from './store';
-import configMixin from './util/config-mixin';
-import eventBusMixin from './util/event-bus-mixin';
-// import Mapboard from './components/Mapboard';
-import CyclomediaWidget from './cyclomedia/CyclomediaWidget';
-import mergeDeep from './util/merge-deep';
 
-export default (clientConfig) => {
-  const baseConfigUrl = clientConfig.baseConfig;
+var GATEKEEPER_KEY = '35ae5b7bf8f0ff2613134935ce6b4c1e';
+var BASE_CONFIG_URL = 'https://cdn.jsdelivr.net/gh/cityofphiladelphia/mapboard-default-base-config@d3ad38f050cf55b4ab0dc2ff68e6f18025690246/config.js';
+import mapboard from '@philly/mapboard/src/main.js';
+import map from './general/map';
+// import transforms from './general/transforms';
+import parcels from './general/parcels';
+import legendControls from './general/legendControls';
+import imageOverlayGroups from './general/imageOverlayGroups';
+import greeting from './general/greeting';
 
-  // create a global event bus used to proxy events to the mapboard host
-  Vue.use(eventBusMixin);
+import property from './topics/property';
 
-  // get base config
-  return $.ajax({
-    url: baseConfigUrl,
-    success(data) {
-      // parse raw js. yes, it's ok to use eval :)
-      // http://stackoverflow.com/a/87260/676001
-      const baseConfig = eval(data);
 
-      // deep merge base config and client config
-      //const config = mergeDeep(clientConfig, baseConfig);
-      const config = mergeDeep(baseConfig, clientConfig);
 
-      // make config accessible from each component via this.$config
-      Vue.use(configMixin, config);
+let pictApiKey, pictSecretKey;
+const host = window.location.hostname;
+if (host === 'cityatlas-dev.phila.gov') {
+  pictApiKey = process.env.VUE_APP_DEV_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_DEV_PICTOMETRY_SECRET_KEY;
+} else {
+  pictApiKey = process.env.VUE_APP_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_PICTOMETRY_SECRET_KEY;
+}
 
-      // create store
-      const store = createStore(config);
-
-      // mount main vue
-      const vm = new Vue({
-        el: config.el || '#cyclomedia',
-        render: (h) => h(CyclomediaWidget),
-        store
-      });
-
-      // bind mapboard events to host app
-      const events = config.events || {};
-      for (let eventName of Object.keys(events)) {
-        const callback = events[eventName];
-        vm.$eventBus.$on(eventName, callback);
-      }
-
-      // event api for host apps
-      // this doesn't work now that we're getting the base config
-      // asynchronously. see above for workaround.
-      // REVIEW it would be nice to return the jquery ajax deferred and have the
-      // client app call .then() on it.
-      // return {
-      //   on(eventName, callback) {
-      //     vm.$eventBus.$on(eventName, callback);
-      //     return this;
-      //   },
-      //   off(eventName, callback) {
-      //     vm.$eventBus.$off(eventName, callback);
-      //     return this;
-      //   }
-      // };
+mapboard({
+  // defaultAddress: '1234 MARKET ST',
+  // plugin: true,
+  panels: [
+    // 'topics',
+    'map'
+  ],
+  router: {
+    enabled: true
+  },
+  defaultAddressTextPlaceholder: {
+    // text: "Search Address or 9-digit OPA Property Number",
+    wideStyle: {
+      'max-width': '100%',
+      'font-size': '24px',
+      'line-height': '28px'
     },
-    error(err) {
-      console.error('Error loading base config:', err);
+    narrowStyle: {
+      'max-width': '100%',
+      'font-size': '20px',
+      'line-height': '24px'
     }
-  });
-};
+  },
+  geolocation: {
+    enabled: true,
+    icon: ['far', 'dot-circle']
+  },
+  addressInput: {
+    width: 415,
+    mapWidth: 300,
+    position: 'right',
+    autocompleteEnabled: false,
+    autocompleteMax: 15,
+    placeholder: 'Search the map',
+  },
+  rootStyle: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  gatekeeperKey: GATEKEEPER_KEY,
+  map,
+  baseConfig: BASE_CONFIG_URL,
+  parcels,
+  imageOverlayGroups,
+  legendControls,
+  cyclomedia: {
+    enabled: true,
+    measurementAllowed: false,
+    popoutAble: true,
+    recordingsUrl: 'https://atlas.cyclomedia.com/Recordings/wfs',
+    username: process.env.VUE_APP_CYCLOMEDIA_USERNAME,
+    password: process.env.VUE_APP_CYCLOMEDIA_PASSWORD,
+    apiKey: process.env.VUE_APP_CYCLOMEDIA_API_KEY,
+  },
+  pictometry: {
+    enabled: false,
+    iframeId: 'pictometry-ipa',
+    apiKey: pictApiKey,
+    secretKey: pictSecretKey,
+  },
+  // transforms,
+  greeting,
+  // dataSources: {
+  //   threeOneOneCarto,
+  //   condoList,
+  //   crimeIncidents,
+  //   divisions,
+  //   dorCondoList,
+  //   dorDocuments,
+  //   electedOfficials,
+  //   liBusinessLicenses,
+  //   liInspections,
+  //   liPermits,
+  //   liViolations,
+  //   nearbyZoningAppeals,
+  //   nextElectionAPI,
+  //   opa,
+  //   pollingPlaces,
+  //   rco,
+  //   regmaps,
+  //   vacantIndicatorsPoints,
+  //   zoningAppeals,
+  //   zoningBase,
+  //   zoningDocs,
+  //   zoningOverlay,
+  //   // charterSchools,
+  //   // neighboringProperties,
+  // },
+  topics: [
+    property,
+  //   condos,
+  //   deeds,
+  //   li,
+  //   zoning,
+  //   // polling,
+  //   // rcoTopic,
+  //   voting,
+  //   nearby,
+  ],
+  components: [
+    {
+      type: 'topic-set',
+      options: {
+        defaultTopic: 'property'
+      }
+    },
+  ],
+});

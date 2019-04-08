@@ -1,12 +1,11 @@
 language: node_js
 node_js:
-  - node
+  - "8"
+env:
+  - VUE_APP_CYCLOMEDIA_API_KEY=$CYCLOMEDIA_API_KEY VUE_APP_CYCLOMEDIA_PASSWORD=$CYCLOMEDIA_PASSWORD VUE_APP_CYCLOMEDIA_USERNAME=$CYCLOMEDIA_USERNAME
 script: npm run build
 before_deploy:
   - rm -rf node_modules
-  # - source ./.travis/s3_utils.sh
-  # - S3_BUCKET=$(get_s3_bucket)
-  - echo "Will push to S3 bucket $S3_BUCKET."
 deploy:
   - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID

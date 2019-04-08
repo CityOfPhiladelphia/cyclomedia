@@ -1,30 +1,31 @@
 {
-  "name": "mapboard",
+  "name": "cyclomedia",
   "description": "A Vue.js component for data-rich web mapping",
   "version": "0.0.3",
   "author": "City of Philadelphia <maps@phila.gov>",
+  "private": false,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --hot",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
   },
   "dependencies": {
-    "Leaflet.vector-markers": "^0.0.6",
-    "leaflet": "^1.0.3",
-    "vue": "^2.3.3",
-    "vue-router": "^2.5.3",
-    "vuex": "^2.3.1"
+    "@philly/mapboard": "^3.0.32",
+    "vue": "^2.6.9"
   },
   "devDependencies": {
-    "babel-core": "^6.0.0",
-    "babel-loader": "^6.0.0",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-latest": "^6.0.0",
-    "cross-env": "^3.0.0",
-    "css-loader": "^0.25.0",
-    "file-loader": "^0.9.0",
-    "vue-loader": "^12.1.0",
-    "vue-template-compiler": "^2.3.3",
-    "webpack": "^2.2.0",
-    "webpack-dev-server": "^2.2.0"
-  }
+    "@vue/cli-plugin-babel": "^3.0.5",
+    "@vue/cli-service": "^3.0.5",
+    "vue-template-compiler": "^2.6.9",
+    "webpack-visualizer-plugin": "^0.1.11"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
 }
