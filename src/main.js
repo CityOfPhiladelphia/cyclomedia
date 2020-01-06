@@ -1,67 +1,90 @@
 import Vue from 'vue';
+import axios from 'axios';
 import createStore from './store';
 import configMixin from './util/config-mixin';
-import eventBusMixin from './util/event-bus-mixin';
-// import Mapboard from './components/Mapboard';
-import CyclomediaWidget from './cyclomedia/CyclomediaWidget';
 import mergeDeep from './util/merge-deep';
 
-export default (clientConfig) => {
-  const baseConfigUrl = clientConfig.baseConfig;
+import * as faAll from './fa.js';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
-  // create a global event bus used to proxy events to the mapboard host
-  Vue.use(eventBusMixin);
+import controllerMixin from '@philly/vue-datafetch/src/controller.js';
 
-  // get base config
-  return $.ajax({
-    url: baseConfigUrl,
-    success(data) {
-      // parse raw js. yes, it's ok to use eval :)
-      // http://stackoverflow.com/a/87260/676001
-      const baseConfig = eval(data);
+// import eventBusMixin from './util/event-bus-mixin';
+// import CyclomediaWidget from '@philly/vue-mapping/src/cyclomedia/Widget.vue';
+import router from './router';
+import App from './components/App.vue';
 
-      // deep merge base config and client config
-      //const config = mergeDeep(clientConfig, baseConfig);
-      const config = mergeDeep(baseConfig, clientConfig);
+import 'phila-standards/dist/css/phila-app.min.css';
 
-      // make config accessible from each component via this.$config
-      Vue.use(configMixin, config);
-
-      // create store
-      const store = createStore(config);
-
-      // mount main vue
-      const vm = new Vue({
-        el: config.el || '#cyclomedia',
-        render: (h) => h(CyclomediaWidget),
-        store
-      });
-
-      // bind mapboard events to host app
-      const events = config.events || {};
-      for (let eventName of Object.keys(events)) {
-        const callback = events[eventName];
-        vm.$eventBus.$on(eventName, callback);
-      }
-
-      // event api for host apps
-      // this doesn't work now that we're getting the base config
-      // asynchronously. see above for workaround.
-      // REVIEW it would be nice to return the jquery ajax deferred and have the
-      // client app call .then() on it.
-      // return {
-      //   on(eventName, callback) {
-      //     vm.$eventBus.$on(eventName, callback);
-      //     return this;
-      //   },
-      //   off(eventName, callback) {
-      //     vm.$eventBus.$off(eventName, callback);
-      //     return this;
-      //   }
-      // };
+const clientConfig = {
+  app: {
+    title: 'Cyclomedia',
+    tagLine: '',
+  },
+  cyclomedia: {
+    enabled: true,
+    orientation: 'full-screen',
+    measurementAllowed: false,
+    popoutAble: true,
+    recordingsUrl: 'https://atlas.cyclomedia.com/Recordings/wfs',
+    username: process.env.VUE_APP_CYCLOMEDIA_USERNAME,
+    password: process.env.VUE_APP_CYCLOMEDIA_PASSWORD,
+    apiKey: process.env.VUE_APP_CYCLOMEDIA_API_KEY,
+  },
+  geocoder: {
+    url: function (input) {
+      var inputEncoded = encodeURIComponent(input);
+      return 'https://api.phila.gov/ais/v1/search/' + inputEncoded;
     },
-    error(err) {
-      console.error('Error loading base config:', err);
-    }
+    params: {
+      gatekeeperKey: process.env.VUE_APP_GATEKEEPER_KEY,
+      include_units: true,
+      opa_only: true,
+    },
+  },
+}
+
+const baseConfigUrl = null;
+
+function initVue(config) {
+  // const baseConfigUrl = clientConfig.baseConfig;
+  // const baseConfigUrl = 'https://cdn.jsdelivr.net/gh/cityofphiladelphia/pde_base_config@3cb644750f4db8619a5b41f5369d1e280678f7bb/config.js';
+  // make config accessible from each component via this.$config
+  Vue.use(configMixin, config);
+  Vue.component('font-awesome-icon', FontAwesomeIcon);
+
+  // create store
+  const store = createStore(config);
+
+  Vue.use(controllerMixin, { config, store, router });
+
+  // mount main vue
+  const vm = new Vue({
+    el: config.el || '#vue-app',
+    render: (h) => h(App),
+    router,
+    store,
   });
-};
+
+}
+
+// if there is a base config, get base config
+if (baseConfigUrl) {
+  axios.get(baseConfigUrl).then(response => {
+    const data = response.data;
+    // parse raw js. yes, it's ok to use eval :)
+    // http://stackoverflow.com/a/87260/676001
+    const baseConfig = eval(data);
+
+    // deep merge base config and client config
+    //const config = mergeDeep(clientConfig, baseConfig);
+    const config = mergeDeep(baseConfig, clientConfig);
+    console.log('data:', data, 'baseConfig:', baseConfig, 'clientConfig:', clientConfig, 'config:', config);
+
+    initVue(config);
+  }).catch(err => {
+    console.error('Error loading base config:', err);
+  });
+} else {
+  initVue(clientConfig);
+}

@@ -1,22 +1,27 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import pvdStore from '@philly/vue-datafetch/src/store';
+import pvmStore from '@philly/vue-mapping/src/store';
+import mergeDeep from './util/merge-deep';
+
+console.log('pvdStore:', pvdStore);
 
 // when you load vuex from a script tag this seems to happen automatically
-// Vue.use(Vuex);
+Vue.use(Vuex);
 
 function createStore(config) {
 
   const initialState = {
     // activeTopic: defaultTopic.key,
     // the ais feature
-    geocode: {
-      status: null,
-      data: null
-    },
+    // geocode: {
+    //   status: null,
+    //   data: null
+    // },
     // the leaflet map object
     map: {
-      center: config.map.center,
-      zoom: config.map.zoom,
+      // center: config.map.center,
+      // zoom: config.map.zoom,
       map: null,
       bounds: null,
       // basemap: defaultTopic.basemap,
@@ -36,13 +41,13 @@ function createStore(config) {
     dorParcels: [],
     pwdParcel: null,
     // sources,
-    cyclomedia: {
-      active: false,
-      viewer: null,
-      recordings: [],
-      locFromApp: null,
-      locFromViewer: null,
-    },
+    // cyclomedia: {
+    //   active: false,
+    //   viewer: null,
+    //   recordings: [],
+    //   locFromApp: null,
+    //   locFromViewer: null,
+    // },
     // we need this to know whether or not to force an update on the first show
     pictometry: {
       ipa: null,
@@ -55,7 +60,7 @@ function createStore(config) {
   };
 
   // TODO standardize how payloads are passed around/handled
-  return new Vuex.Store({
+  const mb = {
     state: initialState,
     getters: {},
     mutations: {
@@ -121,12 +126,12 @@ function createStore(config) {
       setPwdParcel(state, payload) {
         state.pwdParcel = payload;
       },
-      setGeocodeStatus(state, payload) {
-        state.geocode.status = payload;
-      },
-      setGeocodeData(state, payload) {
-        state.geocode.data = payload;
-      },
+      // setGeocodeStatus(state, payload) {
+      //   state.geocode.status = payload;
+      // },
+      // setGeocodeData(state, payload) {
+      //   state.geocode.data = payload;
+      // },
       setBasemap(state, payload) {
         state.map.basemap = payload;
       },
@@ -137,9 +142,9 @@ function createStore(config) {
         state.pictometry.active = payload;
       },
       setCyclomediaActive(state, payload) {
-        if (!config.cyclomedia.enabled) {
-          return;
-        }
+        // if (!config.cyclomedia.enabled) {
+        //   return;
+        // }
         state.cyclomedia.active = payload;
       },
       setCyclomediaViewer(state, payload) {
@@ -170,6 +175,16 @@ function createStore(config) {
         state.pictometry.cameraIds = payload;
       },
     }
+  };
+
+  let mergeStore = mergeDeep(pvmStore, pvdStore.store);
+  mergeStore = mergeDeep(mergeStore, mb);
+
+
+  return new Vuex.Store({
+    state: mergeStore.state,
+    getters: mergeStore.getters,
+    mutations: mergeStore.mutations,
   });
 }
 
