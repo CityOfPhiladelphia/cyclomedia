@@ -9,13 +9,39 @@ import mergeDeep from './util/merge-deep';
 Vue.use(Vuex);
 
 function createStore(config) {
-  const initialState = {};
+  const initialState = {
+    windowDimensions: {
+      height: 0,
+      width: 0,
+    },
+    fullScreen: {
+      mapOnly: false,
+      cycloOnly: false,
+    },
+    fullScreenMapEnabled: false,
+    fullScreenCycloEnabled: true,
+  };
   const mb = {
     state: initialState,
     getters: {},
     mutations: {
       setCandidates(state, payload) {
         state.candidates = payload;
+      },
+      setWindowDimensions(state, payload) {
+        state.windowDimensions = payload;
+      },
+      setMapOnly(state, payload) {
+        state.fullScreen.mapOnly = payload;
+      },
+      setCycloOnly(state, payload) {
+        state.fullScreen.CycloOnly = payload;
+      },
+      setFullScreenMapEnabled(state, payload) {
+        state.fullScreenMapEnabled = payload;
+      },
+      setFullScreenCycloEnabled(state, payload) {
+        state.fullScreenCycloEnabled = payload;
       },
     }
   };

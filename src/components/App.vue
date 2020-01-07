@@ -17,19 +17,78 @@
       </div> -->
     </PhilaHeader>
 
-    <cyclomedia-widget
-      slot="cycloWidget"
-      screen-percent="2"
-      :orientation="this.$config.cyclomedia.orientation"
-      @cyclomedia-widget-mounted="initializeCyclomedia"
+    <div
+      id="root-container"
+      class="surrounding-div grid-x"
     >
-      <address-input
-        :width-from-config="this.$config.addressInput.width"
-        :placeholder="this.$config.addressInput.placeholder"
-        class='address-input'
-        @handle-search-form-submit="handleSearchFormSubmit"
-      />
-    </cyclomedia-widget>
+      <!-- <full-screen-map-toggle-tab/> -->
+      <div class="small-24 medium-12">
+        <map_
+          id="map-tag"
+          :center="this.$store.state.map.center"
+          :zoom="this.$store.state.map.zoom"
+          attribution-position="bottomleft"
+          zoom-control-position="bottomleft"
+          :min-zoom="this.$config.map.minZoom"
+          :max-zoom="this.$config.map.maxZoom"
+          @l-moveend="handleMapMove"
+        >
+        <!-- @l-click="handleMapClick"
+        <!-- basemaps -->
+
+          <esri-tiled-map-layer
+            v-for="(basemap, key) in this.$config.map.basemaps"
+            v-if="activeBasemap === key"
+            :key="key"
+            :url="basemap.url"
+            :max-zoom="basemap.maxZoom"
+            :attribution="basemap.attribution"
+          />
+
+          <!-- basemap labels and parcels outlines -->
+          <esri-tiled-map-layer
+            v-for="(tiledLayer, key) in this.$config.map.tiledLayers"
+            v-if="tiledLayers.includes(key)"
+            :key="key"
+            :url="tiledLayer.url"
+            :z-index="tiledLayer.zIndex"
+            :attribution="tiledLayer.attribution"
+          />
+
+          <cyclomedia-recording-circle
+            v-for="recording in cyclomediaRecordings"
+            v-if="cyclomediaActive"
+            :key="recording.imageId"
+            :image-id="recording.imageId"
+            :latlng="[recording.lat, recording.lng]"
+            :size="1.2"
+            :color="'#3388ff'"
+            :weight="1"
+            @l-click="handleCyclomediaRecordingClick"
+          />
+
+        </map_>
+      </div>
+
+      <!-- slot="cycloWidget"
+      screen-percent="2" -->
+      <cyclomedia-widget
+        :orientation="this.$config.cyclomedia.orientation"
+        @cyclomedia-widget-mounted="initializeCyclomedia"
+      >
+        <full-screen-toggle-tab
+          :event="'toggle-tab-click'"
+          @toggle-tab-click="toggleTest"
+        />
+        <!-- :toggleFunction="toggleFunction" -->
+        <address-input
+          :width-from-config="this.$config.addressInput.width"
+          :placeholder="this.$config.addressInput.placeholder"
+          class='address-input'
+          @handle-search-form-submit="handleSearchFormSubmit"
+        />
+      </cyclomedia-widget>
+    </div>
   </div>
 </template>
 
@@ -37,21 +96,51 @@
 import PhilaHeader from './PhilaHeader.vue';
 import PhilaFooter from './PhilaFooter.vue';
 
+import Map_ from '@philly/vue-mapping/src/leaflet/Map.vue';
+import FullScreenToggleTab from '@philly/vue-mapping/src/components/FullScreenToggleTab.vue';
+import FullScreenMapToggleTab from '@philly/vue-mapping/src/components/FullScreenMapToggleTab.vue';
+
+import CyclomediaRecordingsClient from '@philly/vue-mapping/src/cyclomedia/recordings-client.js';
+
+import cyclomediaMixin from '@philly/vue-mapping/src/cyclomedia/map-panel-mixin.js';
+
+// let toggleFunction = function() {
+//   console.log('toggleFunction is running');
+// }
+
 export default {
 
   components: {
     PhilaHeader,
     PhilaFooter,
+    Map_,
+    FullScreenToggleTab,
+    FullScreenMapToggleTab,
     AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@philly/vue-comps/src/components/AddressInput.vue'),
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@philly/vue-mapping/src/cyclomedia/Widget.vue'),
+    EsriTiledMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledMapLayer" */'@philly/vue-mapping/src/esri-leaflet/TiledMapLayer.vue'),
+    CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@philly/vue-mapping/src/cyclomedia/RecordingCircle.vue'),
+  },
+  mixins: [
+    cyclomediaMixin,
+  ],
+  created() {
+    this.$cyclomediaRecordingsClient = new CyclomediaRecordingsClient(
+      this.$config.cyclomedia.recordingsUrl,
+      this.$config.cyclomedia.username,
+      this.$config.cyclomedia.password,
+      4326,
+    );
   },
   mounted() {
-    // console.log('app mounted, this.$config:', this.$config, 'this.$route:', this.$route);
+    console.log('app mounted, this.$config:', this.$config, 'this.$route:', this.$route);
+    this.handleWindowResize();
     if (this.$route.query.address) {
       this.$controller.handleSearchFormSubmit(this.$route.query.address);
     } else if (this.$route.query.lat) {
       this.$store.commit('setCyclomediaLatLngFromMap', [parseFloat(this.$route.query.lat), parseFloat(this.$route.query.lng)]);
     }
+    this.handleMapMove();
   },
   watch: {
     geocodeCoordinates() {
@@ -59,6 +148,13 @@ export default {
     },
   },
   computed: {
+    // toggleFunction() {
+    //   let test = function() {
+    //     console.log('toggleFunction is running, this.$store:', this.$store);
+    //     store.commit('setFullScreenCycloEnabled', store.state.fullScreenCycloEnabled);
+    //   }
+    //   return test;
+    // },
     geocodeCoordinates() {
       let value;
       if (this.$store.state.geocode.data) {
@@ -68,8 +164,18 @@ export default {
       }
       return value;
     },
+    activeBasemap() {
+      return 'pwd';
+    },
+    tiledLayers() {
+      return [ 'cityBasemapLabels' ];
+    },
   },
   methods: {
+    toggleTest(e) {
+      console.log('toggleTest is running, this.$store', this.$store, 'e:', e);
+      this.$store.commit('setFullScreenCycloEnabled', !this.$store.state.fullScreenCycloEnabled);
+    },
     initializeCyclomedia() {
       // console.log('app initializeCyclomedia is running');
       this.$store.commit('setCyclomediaInitializationBegun', true);
@@ -79,6 +185,50 @@ export default {
       // console.log('App.vue handleSearchFormSubmit is running');
       this.$controller.handleSearchFormSubmit(value);
     },
+    handleMapMove(e) {
+      // console.log('handleMapMove is firing')
+      const map = this.$store.state.map.map;
+      const center = map.getCenter();
+      const { lat, lng } = center;
+      const coords = [ lng, lat ];
+
+      const cyclomediaConfig = this.$config.cyclomedia || {};
+
+      if (cyclomediaConfig.enabled) {
+        // update cyclo recordings
+        this.updateCyclomediaRecordings();
+        this.$store.commit('setCyclomediaLatLngFromMap', [ lat, lng ]);
+      }
+    },
+    handleWindowResize() {
+      // console.log('Mapboard.vue handleWindowResize is running');
+      // this only actually affects the size if it is set to "plugin mode"
+      if (this.$config.plugin) {
+        if (this.$config.plugin.enabled) {
+          this.mbRootStyle.height = this.$config.plugin.height.toString() + 'px';
+          // return;
+        }
+      }
+
+      if (window.innerWidth >= 750) {
+        // this.mbRootStyle.height = '600px'
+      } else {
+        this.mbRootStyle.height = 'auto';
+      }
+
+      const rootElement = document.getElementById('root-container');
+      const rootStyle = window.getComputedStyle(rootElement);
+      const rootWidth = rootStyle.getPropertyValue('width');
+      const rootHeight = rootStyle.getPropertyValue('height');
+      const rootWidthNum = parseInt(rootWidth.replace('px', ''));
+      const rootHeightNum = parseInt(rootHeight.replace('px', ''));
+
+      const dim = {
+        width: rootWidthNum,
+        height: rootHeightNum,
+      };
+      this.$store.commit('setWindowDimensions', dim);
+    },
   }
 }
 </script>
@@ -87,6 +237,10 @@ export default {
 
 <style lang="scss">
 @import "@/scss/global.scss";
+
+.surrounding-div {
+  height: 100%;
+}
 
 .toggle-map{
   margin:0 !important;

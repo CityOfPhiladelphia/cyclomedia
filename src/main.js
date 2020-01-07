@@ -15,6 +15,7 @@ import router from './router';
 import App from './components/App.vue';
 
 import 'phila-standards/dist/css/phila-app.min.css';
+import 'leaflet/dist/leaflet.css';
 
 const clientConfig = {
   app: {
@@ -23,7 +24,7 @@ const clientConfig = {
   },
   cyclomedia: {
     enabled: true,
-    orientation: 'full-screen',
+    orientation: 'vertical',
     measurementAllowed: false,
     popoutAble: true,
     recordingsUrl: 'https://atlas.cyclomedia.com/Recordings/wfs',
@@ -31,6 +32,7 @@ const clientConfig = {
     password: process.env.VUE_APP_CYCLOMEDIA_PASSWORD,
     apiKey: process.env.VUE_APP_CYCLOMEDIA_API_KEY,
   },
+  pictometry: {},
   geocoder: {
     url: function (input) {
       var inputEncoded = encodeURIComponent(input);
@@ -56,11 +58,11 @@ const clientConfig = {
   },
 }
 
-const baseConfigUrl = null;
+// const baseConfigUrl = null;
+const baseConfigUrl = 'https://cdn.jsdelivr.net/gh/cityofphiladelphia/pde_base_config@3cb644750f4db8619a5b41f5369d1e280678f7bb/config.js';
 
 function initVue(config) {
   // const baseConfigUrl = clientConfig.baseConfig;
-  // const baseConfigUrl = 'https://cdn.jsdelivr.net/gh/cityofphiladelphia/pde_base_config@3cb644750f4db8619a5b41f5369d1e280678f7bb/config.js';
   // make config accessible from each component via this.$config
   Vue.use(configMixin, config);
   Vue.component('font-awesome-icon', FontAwesomeIcon);
@@ -83,15 +85,17 @@ function initVue(config) {
 // if there is a base config, get base config
 if (baseConfigUrl) {
   axios.get(baseConfigUrl).then(response => {
+    // console.log('axios getting base config, clientConfig:', clientConfig);
     const data = response.data;
     // parse raw js. yes, it's ok to use eval :)
     // http://stackoverflow.com/a/87260/676001
-    const baseConfig = eval(data);
+    const baseConfigFn = eval(data);
+    const baseConfig = baseConfigFn({ gatekeeperKey: process.env.VUE_APP_GATEKEEPER_KEY });
 
     // deep merge base config and client config
     //const config = mergeDeep(clientConfig, baseConfig);
     const config = mergeDeep(baseConfig, clientConfig);
-    console.log('data:', data, 'baseConfig:', baseConfig, 'clientConfig:', clientConfig, 'config:', config);
+    // console.log('data:', data, 'baseConfig:', baseConfig, 'clientConfig:', clientConfig, 'config:', config);
 
     initVue(config);
   }).catch(err => {
