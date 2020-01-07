@@ -65,18 +65,6 @@
               </div> -->
             </section>
           </div>
-          <!-- <div class="cell large-auto small-auto small-centered text-center">
-            <combo-search
-              :dropdown="dropdownData"
-              :search-string="searchString"
-              :dropdown-selected="dropdownSelected"
-              @trigger-combo-search="comboSearchTriggered"
-              @trigger-clear-search="clearSearchTriggered"
-            />
-            <div class="search">
-              <slot name="search" />
-            </div>
-          </div> -->
         </div>
       </div>
     </div>
@@ -84,9 +72,6 @@
       v-show="!isOpen"
       class="stripe"
     />
-    <!-- <div
-      class="white-stripe"
-    /> -->
     <div
       v-show="isOpen"
       class="mobile-menu-content-container show-for-small-only"
@@ -110,16 +95,10 @@
 </template>
 
 <script>
-// TODO: move logo, link etc to app config.
+
 import Logo from '@/assets/city-of-philadelphia-logo.png';
-// import AddressInput from '@philly/vue-comps/src/components/AddressInput.vue'
-// import Paragraph from '@philly/vue-comps/src/components/Paragraph.vue'
-// import '@philly/vue-comps'
 
 export default {
-  // components: {
-  //   ComboSearch: () => import(/* webpackChunkName: "pvc_ComboSearch" */'@philly/vue-comps/src/components/ComboSearch.vue'),
-  // },
   props: {
     appLink: {
       type: String,
@@ -198,23 +177,6 @@ export default {
     },
   },
   methods: {
-    // searchTypeChanged(nextSearchType) {
-    //   // console.log('searchTypeChanged, nextSearchType:', nextSearchType);
-    //   let startQuery = { ...this.$route.query };
-    //   for (let dropdown of Object.keys(this.dropdownData)) {
-    //     // console.log('in loop, dropdown:', dropdown);
-    //     delete startQuery[dropdown];
-    //   }
-    //   // this.$router.push({ query: startQuery });
-    //   this.searchString = '';
-    // },
-    // clearSearchTriggered() {
-    //   // console.log('in clearSearchTriggered, this.$route.query:', this.$route.query);
-    //   let startQuery = { ...this.$route.query };
-    //   delete startQuery[this.searchType];
-    //   // this.$router.push({ query: startQuery });
-    //   this.searchString = '';
-    // },
     onResize() {
       if (window.innerWidth > 749) {
         this.currentLogo = '/img/city-of-philadelphia-logo.09d4440b.png';
@@ -376,10 +338,6 @@ export default {
     font-style: normal;
     font-weight: normal !important;
   }
-
-
 }
-
-
 
 </style>

@@ -7,9 +7,9 @@
     <PhilaHeader
       :app-title="this.$config.app.title"
       :app-tag-line="this.$config.app.tagLine"
-      :app-logo="appLogo"
-      :app-logo-alt="this.$config.app.logoAlt"
     >
+    <!-- :app-logo="appLogo"
+    :app-logo-alt="this.$config.app.logoAlt" -->
       <!-- <div slot="mobile-menu">
         <PhilaFooter
           @howToUseLink="toggleModal()"
@@ -17,30 +17,25 @@
       </div> -->
     </PhilaHeader>
 
-    <!-- <div class="cell medium-auto medium-cell-block-container main-content"> -->
-      <cyclomedia-widget
-        slot="cycloWidget"
-        screen-percent="2"
-        :orientation="this.$config.cyclomedia.orientation"
-        @cyclomedia-widget-mounted="initializeCyclomedia"
-      >
-        <address-input
-          width-from-config="350"
-          placeholder="search for an address"
-          class='address-input'
-          @handle-search-form-submit="handleSearchFormSubmit"
-        />
-      </cyclomedia-widget>
-    <!-- </div> -->
+    <cyclomedia-widget
+      slot="cycloWidget"
+      screen-percent="2"
+      :orientation="this.$config.cyclomedia.orientation"
+      @cyclomedia-widget-mounted="initializeCyclomedia"
+    >
+      <address-input
+        :width-from-config="this.$config.addressInput.width"
+        :placeholder="this.$config.addressInput.placeholder"
+        class='address-input'
+        @handle-search-form-submit="handleSearchFormSubmit"
+      />
+    </cyclomedia-widget>
   </div>
 </template>
 
 <script>
-
 import PhilaHeader from './PhilaHeader.vue';
 import PhilaFooter from './PhilaFooter.vue';
-// import cyclomediaMixin from '@philly/vue-mapping/src/cyclomedia/map-panel-mixin.js';
-import Logo from '@/assets/city-of-philadelphia-logo.png';
 
 export default {
 
@@ -50,50 +45,17 @@ export default {
     AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@philly/vue-comps/src/components/AddressInput.vue'),
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@philly/vue-mapping/src/cyclomedia/Widget.vue'),
   },
-  props: {
-    appLogo: {
-      type: String,
-      default: Logo,
-    },
-  },
-  data() {
-    return {
-      publicPath: '@/assets/',
-      isLarge: true,
-      'top': 3,
-      'bottom': 2,
-      hasData: false,
-      isModalOpen: false,
-      introPage: true,
-    };
-  },
-  // mixins: [
-  //   cyclomediaMixin,
-  // ],
-  created() {
-    window.addEventListener('resize', this.onResize);
-  },
-  beforeDestroy() {
-    window.removeEventListener('resize', this.onResize);
-  },
   mounted() {
-    console.log('app mounted, this.$config:', this.$config, 'this.$route:', this.$route);
-    this.onResize();
+    // console.log('app mounted, this.$config:', this.$config, 'this.$route:', this.$route);
     if (this.$route.query.address) {
       this.$controller.handleSearchFormSubmit(this.$route.query.address);
     } else if (this.$route.query.lat) {
       this.$store.commit('setCyclomediaLatLngFromMap', [parseFloat(this.$route.query.lat), parseFloat(this.$route.query.lng)]);
     }
-  //   this.$store.commit('setCyclomediaInitializationBegun', false);
-  //   this.$store.commit('setCyclomediaInitializationBegun', true);
-  //   this.$store.commit('setCyclomediaActive', true);
   },
   watch: {
     geocodeCoordinates() {
-      // console.log('geocodeCoordinates changed');
-      // if (this.$store.state.geocode.data) {
       this.$store.commit('setCyclomediaLatLngFromMap', [this.$store.state.geocode.data.geometry.coordinates[1], this.$store.state.geocode.data.geometry.coordinates[0]]);
-      // }
     },
   },
   computed: {
@@ -109,24 +71,13 @@ export default {
   },
   methods: {
     initializeCyclomedia() {
-      console.log('app initializeCyclomedia is running');
+      // console.log('app initializeCyclomedia is running');
       this.$store.commit('setCyclomediaInitializationBegun', true);
       this.$store.commit('setCyclomediaActive', true);
     },
     handleSearchFormSubmit(value) {
-      console.log('App.vue handleSearchFormSubmit is running');
+      // console.log('App.vue handleSearchFormSubmit is running');
       this.$controller.handleSearchFormSubmit(value);
-    },
-    onResize() {
-      // console.log('onResize is running, window.innerWidth:', window.innerWidth);
-      if (window.innerWidth > 749) {
-        // this.$data.isMapVisible = true;
-        this.$data.isLarge = true;
-        // console.log('its greater');
-      } else {
-        this.$data.isLarge = false;
-        // console.log('its less than');
-      }
     },
   }
 }
@@ -136,13 +87,6 @@ export default {
 
 <style lang="scss">
 @import "@/scss/global.scss";
-
-.address-input {
-  position: absolute;
-  z-index: 10;
-  right: 10px;
-  top: 100px;
-}
 
 .toggle-map{
   margin:0 !important;
@@ -218,32 +162,6 @@ export default {
   margin-right: 10px;
 }
 
-// #collection-summary {
-//   display: inline-block !important;
-// }
-
-// #data-panel-container .pvc-horizontal-table .pvc-horizontal-table-body .stack>thead>tr>th {
-//   position: sticky;
-//   top: -2px !important;
-//   z-index: 2;
-//   border-left:1px solid white;
-// }
-//
-// #results-summary{
-//   height: 45px;
-//   padding: 8px 0px  0px 10px;
-//   margin: 0 2px 0 2px;
-//   background-color: #f0f0f0;
-//   border-style: solid;
-//   border-color: #0f4d90;
-//   border-width: 2px 0 0 0 ;
-// }
-
-// .bottom-half #data-panel-container #lower-toggle-tab {
-//   // position: fixed;
-//   top: calc(60% - 10px);
-// }
-
 .bottom-full #data-panel-container #lower-toggle-tab {
   // position: relative;
   top: 87px;
@@ -275,16 +193,6 @@ export default {
   display: none;
 }
 
-// .condo-button {
-//   background-color: #5555;
-//   height: 100%;
-//   width: 100%;
-//   text-transform: unset;
-//   font-family: "Open Sans", Helvetica, Roboto, Arial, sans-serif;
-//   font-weight: 600;
-//   padding: 10.5px 0 10.5px 0;
-// }
-
 .fa-times-circle{
   margin-bottom: 2px;
 }
@@ -296,15 +204,6 @@ export default {
 .modal-opacity {
   opacity: 0.2;
 }
-
-// .pvc-horizontal-table-controls {
-//   margin-bottom: 0 !important;
-// }
-//
-// .pvc-horizontal-table-body {
-//   padding-top: 0 !important;
-//   margin-top: 0 !important;
-// }
 
 .pointer {
   cursor: pointer;
@@ -364,7 +263,6 @@ export default {
   top: 100px;
 }
 
-
 @media (max-width: 750px) {
 
   .address-input {
@@ -397,7 +295,6 @@ export default {
     padding-left: 15px;
     position: relative;
   }
-
 
   .pvc-download-data-button, .pvc-export-data-button {
     visibility: hidden;
@@ -433,18 +330,6 @@ export default {
     bottom: 0;
     width: 100%;
   }
-
-  // #results-summary{
-  //   height: 35px;
-  //   padding: 8px 0px  0px 10px;
-  //   margin: 0 2px 0 2px;
-  //   color: rgb(15, 77, 144);
-  //   background-color: #cfcfcf;
-  //   border-style: solid;
-  //   border-color: #0f4d90;
-  //   border-width: 1px 0 1px 0 ;
-  // }
-
 
   thead {
     display: none;

@@ -46,6 +46,14 @@ const clientConfig = {
     enabled: true,
     type: 'vue',
   },
+  addressInput: {
+    width: 350,
+    mapWidth: 300,
+    // position: 'right',
+    autocompleteEnabled: false,
+    autocompleteMax: 15,
+    placeholder: 'Search the map',
+  },
 }
 
 const baseConfigUrl = null;
