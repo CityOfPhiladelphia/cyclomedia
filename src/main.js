@@ -42,6 +42,10 @@ const clientConfig = {
       opa_only: true,
     },
   },
+  router: {
+    enabled: true,
+    type: 'vue',
+  },
 }
 
 const baseConfigUrl = null;

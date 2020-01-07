@@ -25,8 +25,8 @@
         @cyclomedia-widget-mounted="initializeCyclomedia"
       >
         <address-input
-          :width-from-config="'450'"
-          :placeholder="'search for an address'"
+          width-from-config="350"
+          placeholder="search for an address"
           class='address-input'
           @handle-search-form-submit="handleSearchFormSubmit"
         />
@@ -79,12 +79,33 @@ export default {
   mounted() {
     console.log('app mounted, this.$config:', this.$config, 'this.$route:', this.$route);
     this.onResize();
-    if (this.$route.query.lat) {
+    if (this.$route.query.address) {
+      this.$controller.handleSearchFormSubmit(this.$route.query.address);
+    } else if (this.$route.query.lat) {
       this.$store.commit('setCyclomediaLatLngFromMap', [parseFloat(this.$route.query.lat), parseFloat(this.$route.query.lng)]);
     }
   //   this.$store.commit('setCyclomediaInitializationBegun', false);
   //   this.$store.commit('setCyclomediaInitializationBegun', true);
   //   this.$store.commit('setCyclomediaActive', true);
+  },
+  watch: {
+    geocodeCoordinates() {
+      // console.log('geocodeCoordinates changed');
+      // if (this.$store.state.geocode.data) {
+      this.$store.commit('setCyclomediaLatLngFromMap', [this.$store.state.geocode.data.geometry.coordinates[1], this.$store.state.geocode.data.geometry.coordinates[0]]);
+      // }
+    },
+  },
+  computed: {
+    geocodeCoordinates() {
+      let value;
+      if (this.$store.state.geocode.data) {
+        value = this.$store.state.geocode.data.geometry.coordinates;
+      } else {
+        value = null;
+      }
+      return value;
+    },
   },
   methods: {
     initializeCyclomedia() {
