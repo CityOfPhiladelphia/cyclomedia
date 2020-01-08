@@ -58,7 +58,7 @@ const clientConfig = {
     // position: 'right',
     autocompleteEnabled: false,
     autocompleteMax: 15,
-    placeholder: 'Search the map',
+    placeholder: 'Search for an address',
   },
   map: {
     shouldInitialize: false,
