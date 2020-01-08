@@ -44,6 +44,10 @@ const clientConfig = {
       opa_only: true,
     },
   },
+  geolocation: {
+    enabled: true,
+    icon: [ 'far', 'dot-circle' ],
+  },
   router: {
     enabled: true,
     type: 'vue',
@@ -55,6 +59,10 @@ const clientConfig = {
     autocompleteEnabled: false,
     autocompleteMax: 15,
     placeholder: 'Search the map',
+  },
+  map: {
+    shouldInitialize: false,
+    zoom: 13,
   },
 }
 

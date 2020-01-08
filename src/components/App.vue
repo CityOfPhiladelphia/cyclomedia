@@ -22,7 +22,10 @@
       class="surrounding-div grid-x"
     >
       <!-- <full-screen-map-toggle-tab/> -->
-      <div class="small-24 medium-12">
+      <div
+        :class="mapClass"
+      >
+      <!-- v-if="!this.$store.state.fullScreenCycloEnabled" -->
         <map_
           id="map-tag"
           :center="this.$store.state.map.center"
@@ -55,6 +58,42 @@
             :attribution="tiledLayer.attribution"
           />
 
+          <vector-marker
+            v-for="marker in markersForAddress"
+            :key="marker.key"
+            :latlng="marker.latlng"
+            :marker-color="marker.color"
+            :icon="marker.icon"
+            :interactive="false"
+          />
+
+          <!-- <control-corner
+            :v-side="'almostbottom'"
+            :h-side="'left'"
+          /> -->
+
+          <!-- <div v-once>
+            <location-control
+              v-if="geolocationEnabled"
+              v-once
+              :position="'bottomleft'"
+              :title="'Locate me'"
+            />
+          </div> -->
+
+          <!-- location marker -->
+          <circle-marker
+            v-if="this.$store.state.map.location.lat != null"
+            :key="Math.random()"
+            :latlng="locationMarker.latlng"
+            :radius="locationMarker.radius"
+            :fill-color="locationMarker.fillColor"
+            :color="locationMarker.color"
+            :weight="locationMarker.weight"
+            :opacity="locationMarker.opacity"
+            :fill-opacity="locationMarker.fillOpacity"
+          />
+
           <cyclomedia-recording-circle
             v-for="recording in cyclomediaRecordings"
             v-if="cyclomediaActive"
@@ -65,6 +104,22 @@
             :color="'#3388ff'"
             :weight="1"
             @l-click="handleCyclomediaRecordingClick"
+          />
+
+          <!-- marker using a png and ablility to rotate it -->
+          <!-- v-if="cyclomediaActive" -->
+          <png-marker
+            :icon="sitePath + 'images/camera.png'"
+            :latlng="cycloLatlng"
+            :rotation-angle="cycloRotationAngle"
+          />
+
+          <!-- marker using custom code extending icons - https://github.com/iatkin/leaflet-svgicon -->
+          <!-- v-if="cyclomediaActive" -->
+          <svg-view-cone-marker
+            :latlng="cycloLatlng"
+            :rotation-angle="cycloRotationAngle"
+            :h-fov="cycloHFov"
           />
 
         </map_>
@@ -78,6 +133,7 @@
       >
         <full-screen-toggle-tab
           :event="'toggle-tab-click'"
+          :deactivated-direction="'right'"
           @toggle-tab-click="toggleTest"
         />
         <!-- :toggleFunction="toggleFunction" -->
@@ -99,6 +155,8 @@ import PhilaFooter from './PhilaFooter.vue';
 import Map_ from '@philly/vue-mapping/src/leaflet/Map.vue';
 import FullScreenToggleTab from '@philly/vue-mapping/src/components/FullScreenToggleTab.vue';
 import FullScreenMapToggleTab from '@philly/vue-mapping/src/components/FullScreenMapToggleTab.vue';
+import ControlCorner from '@philly/vue-mapping/src/leaflet/ControlCorner.vue';
+import LocationControl from '@philly/vue-mapping/src/components/LocationControl.vue';
 
 import CyclomediaRecordingsClient from '@philly/vue-mapping/src/cyclomedia/recordings-client.js';
 
@@ -116,10 +174,15 @@ export default {
     Map_,
     FullScreenToggleTab,
     FullScreenMapToggleTab,
+    ControlCorner,
+    LocationControl,
     AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@philly/vue-comps/src/components/AddressInput.vue'),
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@philly/vue-mapping/src/cyclomedia/Widget.vue'),
     EsriTiledMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledMapLayer" */'@philly/vue-mapping/src/esri-leaflet/TiledMapLayer.vue'),
+    CircleMarker: () => import(/* webpackChunkName: "mbmp_pvm_CircleMarker" */'@philly/vue-mapping/src/leaflet/CircleMarker.vue'),
     CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@philly/vue-mapping/src/cyclomedia/RecordingCircle.vue'),
+    PngMarker: () => import(/* webpackChunkName: "mbmp_pvm_PngMarker" */'@philly/vue-mapping/src/components/PngMarker.vue'),
+    SvgViewConeMarker: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaSvgViewConeMarker" */'@philly/vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
   },
   mixins: [
     cyclomediaMixin,
@@ -131,6 +194,11 @@ export default {
       this.$config.cyclomedia.password,
       4326,
     );
+    if (this.$config.map) {
+      if (this.$config.map.shouldInitialize === false) {
+        this.$store.commit('setShouldInitializeMap', false);
+      }
+    }
   },
   mounted() {
     console.log('app mounted, this.$config:', this.$config, 'this.$route:', this.$route);
@@ -143,8 +211,10 @@ export default {
     this.handleMapMove();
   },
   watch: {
-    geocodeCoordinates() {
+    geocodeCoordinates(nextGeocodeCoordinates) {
       this.$store.commit('setCyclomediaLatLngFromMap', [this.$store.state.geocode.data.geometry.coordinates[1], this.$store.state.geocode.data.geometry.coordinates[0]]);
+      this.$store.commit('setMapCenter', nextGeocodeCoordinates);
+      // this.$store.commit('setMapZoom', this.geocodeZoom);
     },
   },
   computed: {
@@ -155,6 +225,21 @@ export default {
     //   }
     //   return test;
     // },
+    sitePath() {
+      if (process.env.VUE_APP_PUBLICPATH) {
+        return window.location.origin + process.env.VUE_APP_PUBLICPATH;
+      }
+      return '';
+    },
+    mapClass() {
+      let value;
+      if (!this.$store.state.fullScreenCycloEnabled) {
+        value = 'small-24 medium-12'
+      } else {
+        value = 'small-24 medium-12'
+      }
+      return value;
+    },
     geocodeCoordinates() {
       let value;
       if (this.$store.state.geocode.data) {
@@ -164,17 +249,75 @@ export default {
       }
       return value;
     },
+    cycloLatlng() {
+      if (this.$store.state.cyclomedia.orientation.xyz !== null) {
+        const xyz = this.$store.state.cyclomedia.orientation.xyz;
+        return [ xyz[1], xyz[0] ];
+      }
+      const center = this.$config.map.center;
+      return center;
+
+    },
+    cycloRotationAngle() {
+      return this.$store.state.cyclomedia.orientation.yaw;// * (180/3.14159265359);
+    },
+    cycloHFov() {
+      return this.$store.state.cyclomedia.orientation.hFov;
+    },
     activeBasemap() {
       return 'pwd';
     },
     tiledLayers() {
       return [ 'cityBasemapLabels' ];
     },
+    geolocationEnabled() {
+      if (this.$config.geolocation) {
+        return this.$config.geolocation.enabled;
+      }
+      return false;
+    },
+    locationMarker() {
+      const latlngArray = [ this.$store.state.map.location.lat, this.$store.state.map.location.lng ];
+      const marker = {
+        latlng: latlngArray,
+        radius: 6,
+        fillColor: '#ff3f3f',
+        color: '#ff0000',
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 1.0,
+      };
+      return marker;
+    },
+    markersForAddress() {
+      // console.log('markers-mixin.js markersForAddress computed is running');
+      const markers = [];
+      // geocoded address marker
+      const geocodeGeom = this.geocodeGeom;
+      if (this.identifyFeature === 'address-marker' && geocodeGeom) {
+        const latlng = [ ...geocodeGeom.coordinates ].reverse();
+        const key = this.geocodeResult.properties.street_address;
+        const color = '#2176d2';
+        const markerType = 'geocode';
+        const icon = {
+          prefix: 'fas',
+          icon: 'map-marker-alt',
+          shadow: true,
+          size: 50,
+        };
+        const addressMarker = { latlng, key, color, markerType, icon };
+        markers.push(addressMarker);
+      }
+      return markers;
+    },
   },
   methods: {
     toggleTest(e) {
-      console.log('toggleTest is running, this.$store', this.$store, 'e:', e);
+      console.log('toggleTest is running, this.$store', this.$store, 'this.$store.state.map.map', this.$store.state.map.map);
       this.$store.commit('setFullScreenCycloEnabled', !this.$store.state.fullScreenCycloEnabled);
+      if (this.$store.state.fullScreenCycloEnabled === false) {
+        this.$store.commit('setShouldInitializeMap', true);
+      }
     },
     initializeCyclomedia() {
       // console.log('app initializeCyclomedia is running');
@@ -188,6 +331,9 @@ export default {
     handleMapMove(e) {
       // console.log('handleMapMove is firing')
       const map = this.$store.state.map.map;
+      if (!map) {
+        return;
+      }
       const center = map.getCenter();
       const { lat, lng } = center;
       const coords = [ lng, lat ];
@@ -237,6 +383,10 @@ export default {
 
 <style lang="scss">
 @import "@/scss/global.scss";
+
+.hide {
+  visibility: hidden;
+}
 
 .surrounding-div {
   height: 100%;

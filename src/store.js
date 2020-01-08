@@ -20,6 +20,9 @@ function createStore(config) {
     },
     fullScreenMapEnabled: false,
     fullScreenCycloEnabled: true,
+    map: {
+      zoom: 19,
+    }
   };
   const mb = {
     state: initialState,
