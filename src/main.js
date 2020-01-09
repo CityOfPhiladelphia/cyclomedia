@@ -17,6 +17,16 @@ import App from './components/App.vue';
 import 'phila-standards/dist/css/phila-app.min.css';
 import 'leaflet/dist/leaflet.css';
 
+let pictApiKey, pictSecretKey;
+const host = window.location.hostname;
+if (host === 'atlas-dev.phila.gov.s3-website-us-east-1.amazonaws.com') {
+  pictApiKey = process.env.VUE_APP_ATLASDEV_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_ATLASDEV_PICTOMETRY_SECRET_KEY;
+} else {
+  pictApiKey = process.env.VUE_APP_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_PICTOMETRY_SECRET_KEY;
+}
+
 const clientConfig = {
   app: {
     title: 'Cyclomedia',
@@ -32,7 +42,13 @@ const clientConfig = {
     password: process.env.VUE_APP_CYCLOMEDIA_PASSWORD,
     apiKey: process.env.VUE_APP_CYCLOMEDIA_API_KEY,
   },
-  pictometry: {},
+  pictometry: {
+    enabled: true,
+    orientation: 'horizontal',
+    iframeId: 'pictometry-ipa',
+    apiKey: pictApiKey,
+    secretKey: pictSecretKey,
+  },
   geocoder: {
     url: function (input) {
       var inputEncoded = encodeURIComponent(input);

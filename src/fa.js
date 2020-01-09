@@ -1,5 +1,4 @@
 
-import * as faComps from '@philly/vue-comps/src/fa.js';
 import * as faMapping from '@philly/vue-mapping/src/fa.js';
 
 // Font Awesome Icons

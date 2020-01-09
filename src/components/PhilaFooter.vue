@@ -6,10 +6,10 @@
           <ul class="footer-nav">
             <li><a href="https://www.phila.gov">City of Philadelphia</a></li>
             <li>
-              <popover-link
+              <!-- <popover-link
                 :options="popoverLinkOptions"
                 :slots="popoverLinkSlots"
-              />
+              /> -->
               <!-- :customStyle="this.customStyle" -->
               <!-- <a
                 href=""
@@ -35,7 +35,7 @@
 export default {
   components: {
     // ModalAbout,
-    PopoverLink: () => import(/* webpackChunkName: "lblb_pvc_PopoverLink" */'@philly/vue-comps/src/components/PopoverLink.vue'),
+    // PopoverLink: () => import(/* webpackChunkName: "lblb_pvc_PopoverLink" */'@philly/vue-comps/src/components/PopoverLink.vue'),
   },
   props: {
     feedbackLink: {

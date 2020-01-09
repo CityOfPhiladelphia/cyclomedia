@@ -21,11 +21,18 @@
       id="root-container"
       class="surrounding-div grid-x"
     >
-      <!-- <full-screen-map-toggle-tab/> -->
+
+      <address-input
+        class='address-input'
+        :width-from-config="this.$config.addressInput.width"
+        :placeholder="this.$config.addressInput.placeholder"
+        @handle-search-form-submit="handleSearchFormSubmit"
+      />
+
       <div
-        :class="mapClass"
+        id="map-panel"
+        :class="mapPanelClass"
       >
-      <!-- v-if="!this.$store.state.fullScreenCycloEnabled" -->
         <map_
           id="map-tag"
           :center="this.$store.state.map.center"
@@ -36,7 +43,6 @@
           :max-zoom="this.$config.map.maxZoom"
           @l-moveend="handleMapMove"
         >
-        <!-- @l-click="handleMapClick"
         <!-- basemaps -->
 
           <esri-tiled-map-layer
@@ -127,24 +133,49 @@
 
       <!-- slot="cycloWidget"
       screen-percent="2" -->
-      <cyclomedia-widget
-        :orientation="this.$config.cyclomedia.orientation"
-        @cyclomedia-widget-mounted="initializeCyclomedia"
+      <!-- :orientation="this.$config.cyclomedia.orientation" -->
+      <div
+        id="image-panel"
+        :class="imagePanelClass"
       >
-        <full-screen-toggle-tab
-          :event="'toggle-tab-click'"
-          :deactivated-direction="'right'"
-          @toggle-tab-click="toggleTest"
-        />
-        <!-- :toggleFunction="toggleFunction" -->
-        <address-input
-          :width-from-config="this.$config.addressInput.width"
-          :placeholder="this.$config.addressInput.placeholder"
-          class='address-input'
-          @handle-search-form-submit="handleSearchFormSubmit"
-        />
-      </cyclomedia-widget>
+        <cyclomedia-widget
+          v-if="shouldLoadCyclomediaWidget"
+          @cyclomedia-widget-mounted="initializeCyclomedia"
+        >
+          <full-screen-toggle-tab
+            :event="'toggle-tab-click'"
+            :deactivated-direction="'right'"
+            @toggle-tab-click="toggleScreenShare"
+          />
+
+        </cyclomedia-widget>
+
+        <pictometry-widget
+          v-if="shouldLoadPictometryWidget"
+          v-show="true"
+          @pictometry-widget-mounted="initializePictometry"
+        >
+          <full-screen-toggle-tab
+            :event="'toggle-tab-click'"
+            :deactivated-direction="'right'"
+            @toggle-tab-click="toggleScreenShare"
+          />
+        </pictometry-widget>
+      </div>
+
     </div>
+
+    <button
+      class="toggle-button"
+      @click="toggleScreenShare"
+    >
+      {{ toggleScreenShareButtonMessage }}
+    </button>
+
+    <!-- <PhilaFooter
+      v-show="isLarge"
+      @howToUseLink="toggleModal()"
+    /> -->
   </div>
 </template>
 
@@ -162,10 +193,6 @@ import CyclomediaRecordingsClient from '@philly/vue-mapping/src/cyclomedia/recor
 
 import cyclomediaMixin from '@philly/vue-mapping/src/cyclomedia/map-panel-mixin.js';
 
-// let toggleFunction = function() {
-//   console.log('toggleFunction is running');
-// }
-
 export default {
 
   components: {
@@ -176,13 +203,23 @@ export default {
     FullScreenMapToggleTab,
     ControlCorner,
     LocationControl,
-    AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@philly/vue-comps/src/components/AddressInput.vue'),
+    AddressInput: () => import(/* webpackChunkName: "mbmp_pvc_AddressInput" */'@philly/vue-mapping/src/components/MapAddressInput.vue'),
     CyclomediaWidget: () => import(/* webpackChunkName: "mbmb_pvm_CyclomediaWidget" */'@philly/vue-mapping/src/cyclomedia/Widget.vue'),
+    PictometryWidget: () => import(/* webpackChunkName: "mbmb_pvm_PictometryWidget" */'@philly/vue-mapping/src/pictometry/Widget.vue'),
     EsriTiledMapLayer: () => import(/* webpackChunkName: "mbmp_pvm_EsriTiledMapLayer" */'@philly/vue-mapping/src/esri-leaflet/TiledMapLayer.vue'),
     CircleMarker: () => import(/* webpackChunkName: "mbmp_pvm_CircleMarker" */'@philly/vue-mapping/src/leaflet/CircleMarker.vue'),
     CyclomediaRecordingCircle: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaRecordingCircle" */'@philly/vue-mapping/src/cyclomedia/RecordingCircle.vue'),
     PngMarker: () => import(/* webpackChunkName: "mbmp_pvm_PngMarker" */'@philly/vue-mapping/src/components/PngMarker.vue'),
     SvgViewConeMarker: () => import(/* webpackChunkName: "mbmp_pvm_CyclomediaSvgViewConeMarker" */'@philly/vue-mapping/src/cyclomedia/SvgViewConeMarker.vue'),
+  },
+  data() {
+    const data = {
+      // this will only affect the app size if the app is set to "plugin" mode
+      mbRootStyle: {
+        'height': '100px',
+      },
+    };
+    return data;
   },
   mixins: [
     cyclomediaMixin,
@@ -199,6 +236,7 @@ export default {
         this.$store.commit('setShouldInitializeMap', false);
       }
     }
+    window.addEventListener('resize', this.handleWindowResize);
   },
   mounted() {
     console.log('app mounted, this.$config:', this.$config, 'this.$route:', this.$route);
@@ -214,29 +252,46 @@ export default {
     geocodeCoordinates(nextGeocodeCoordinates) {
       this.$store.commit('setCyclomediaLatLngFromMap', [this.$store.state.geocode.data.geometry.coordinates[1], this.$store.state.geocode.data.geometry.coordinates[0]]);
       this.$store.commit('setMapCenter', nextGeocodeCoordinates);
-      // this.$store.commit('setMapZoom', this.geocodeZoom);
     },
   },
   computed: {
-    // toggleFunction() {
-    //   let test = function() {
-    //     console.log('toggleFunction is running, this.$store:', this.$store);
-    //     store.commit('setFullScreenCycloEnabled', store.state.fullScreenCycloEnabled);
-    //   }
-    //   return test;
-    // },
+    shouldLoadCyclomediaWidget() {
+      return false;
+    },
+    shouldLoadPictometryWidget() {
+      return true;
+    },
+    toggleScreenShareButtonMessage() {
+      if (this.fullScreenImageryEnabled) {
+        return 'Toggle To Map';
+      } else {
+        return 'Toggle to StreetView';
+      }
+    },
     sitePath() {
       if (process.env.VUE_APP_PUBLICPATH) {
         return window.location.origin + process.env.VUE_APP_PUBLICPATH;
       }
       return '';
     },
-    mapClass() {
+    fullScreenImageryEnabled() {
+      return this.$store.state.fullScreenImageryEnabled;
+    },
+    mapPanelClass() {
       let value;
-      if (!this.$store.state.fullScreenCycloEnabled) {
-        value = 'small-24 medium-12'
+      if (this.$store.state.fullScreenImageryEnabled) {
+        value = 'small-0 medium-0'
       } else {
         value = 'small-24 medium-12'
+      }
+      return value;
+    },
+    imagePanelClass() {
+      let value;
+      if (this.$store.state.fullScreenImageryEnabled) {
+        value = 'small-24 medium-24'
+      } else {
+        value = 'small-0 medium-12'
       }
       return value;
     },
@@ -312,10 +367,10 @@ export default {
     },
   },
   methods: {
-    toggleTest(e) {
-      console.log('toggleTest is running, this.$store', this.$store, 'this.$store.state.map.map', this.$store.state.map.map);
-      this.$store.commit('setFullScreenCycloEnabled', !this.$store.state.fullScreenCycloEnabled);
-      if (this.$store.state.fullScreenCycloEnabled === false) {
+    toggleScreenShare() {
+      console.log('toggleScreenShare is running, this.$store', this.$store, 'this.$store.state.map.map', this.$store.state.map.map);
+      this.$store.commit('setfullScreenImageryEnabled', !this.$store.state.fullScreenImageryEnabled);
+      if (this.$store.state.fullScreenImageryEnabled === false) {
         this.$store.commit('setShouldInitializeMap', true);
       }
     },
@@ -323,6 +378,9 @@ export default {
       // console.log('app initializeCyclomedia is running');
       this.$store.commit('setCyclomediaInitializationBegun', true);
       this.$store.commit('setCyclomediaActive', true);
+    },
+    initializePictometry() {
+      console.log('initializePictometry is running');
     },
     handleSearchFormSubmit(value) {
       // console.log('App.vue handleSearchFormSubmit is running');
@@ -356,11 +414,11 @@ export default {
         }
       }
 
-      if (window.innerWidth >= 750) {
-        // this.mbRootStyle.height = '600px'
-      } else {
-        this.mbRootStyle.height = 'auto';
-      }
+      // if (window.innerWidth >= 750) {
+      //   // this.mbRootStyle.height = '600px'
+      // } else {
+      //   this.mbRootStyle.height = 'auto';
+      // }
 
       const rootElement = document.getElementById('root-container');
       const rootStyle = window.getComputedStyle(rootElement);
@@ -384,20 +442,17 @@ export default {
 <style lang="scss">
 @import "@/scss/global.scss";
 
-.hide {
-  visibility: hidden;
-}
-
-.surrounding-div {
+#app {
   height: 100%;
 }
 
-.toggle-map{
+.toggle-map {
   margin:0 !important;
+  position: fixed;
+  bottom:0;
+  width: 100%;
+  z-index: 900;
 }
-// .main-content{
-//   margin-top:.5rem;
-// }
 
 //TODO, move to standards
 @each $value in $colors {
@@ -412,53 +467,9 @@ export default {
   }
 }
 
-.no-scroll{
+.no-scroll {
   overflow: hidden;
   height: 100vh;
-}
-.toggle-map{
-  position: fixed;
-  bottom:0;
-  width: 100%;
-  z-index: 900;
-}
-
-.step-group{
-  margin-left:$spacing-medium;
-
-  .step-label {
-    @include secondary-font(400);
-    display: inline-block;
-    margin-left: -$spacing-medium;
-    background: black;
-    border-radius: $spacing-extra-large;
-    color:white;
-    padding: 0 $spacing-small;
-    width:$spacing-large;
-    height:$spacing-large;
-    line-height: $spacing-large;
-    text-align: center;
-  }
-  .step{
-    margin-top: -$spacing-large;
-    padding-left: $spacing-large;
-    padding-bottom: $spacing-large;
-    border-left:1px solid black;
-
-    &:last-of-type {
-      border:none;
-    }
-
-    .step-title{
-      @include secondary-font(400);
-      font-size:1.2rem;
-      margin-bottom: $spacing-small;
-    }
-  }
-}
-
-#app {
-  height: 100%;
 }
 
 #clear-results {
@@ -466,35 +477,10 @@ export default {
   margin-right: 10px;
 }
 
-.bottom-full #data-panel-container #lower-toggle-tab {
-  // position: relative;
-  top: 87px;
-}
-
-.bottom-half #data-panel-container #lower-toggle-tab {
-    // add height from #results-summary
-    top: calc(60% - 14px) !important;
-}
-
 .logo {
   line-height: 4em;
   padding-left: 10px;
   width: auto;
-}
-
-.bottom-full {
-  overflow-y: auto;
-  flex: 1;
-}
-
-.bottom-half {
-  overflow-y: auto;
-  flex: 2;
-}
-.bottom-none {
-  overflow-y: auto;
-  flex: 0;
-  display: none;
 }
 
 .fa-times-circle{
@@ -505,88 +491,53 @@ export default {
   z-index: 999 !important;
 }
 
-.modal-opacity {
-  opacity: 0.2;
-}
-
 .pointer {
   cursor: pointer;
 }
 
-.top-half {
-  flex: 3;
-}
-
-.top-full {
-  flex: 1;
-}
-
-.top-none {
-  flex: 0;
-}
-
-// .bottom-half #data-panel-container .pvc-horizontal-table .pvc-horizontal-table-body .pvc-export-data-button {
-//   clear:both;
-//   z-index: 999;
-//   top: calc(60% - 7px);
-//   // right: 70px;
-// }
-// .bottom-full #data-panel-container .pvc-horizontal-table .pvc-horizontal-table-body .pvc-export-data-button {
-//   clear:both;
-//   z-index: 999;
-//   top: 93px;
-// }
-
-// .pvc-export-data-button {
-//   position: fixed;
-//   float: right !important;
-// }
-//
-// .csv {
-//   right: 5px !important;
-// }
-//
-// .mailing {
-//   right: 137px !important;
-// }
-
-// .mailing {
-//   left: 125px;
-// }
-
-@media print {
-  #results-summary {
-    display: none;
+// @media #{$small-only} {
+  .small-0 {
+    width: 0px;
   }
-}
+// }
 
-.address-input {
-  position: absolute;
-  z-index: 10;
-  right: 10px;
-  top: 100px;
-}
+@media (min-width: 750px) {
 
-@media (max-width: 750px) {
+  .surrounding-div {
+    height: 100%;
+  }
 
   .address-input {
     position: absolute;
-    z-index: 10;
+    z-index: 1000;
+    right: 10px;
+    top: 100px;
+  }
+
+  .toggle-button {
+    display: none;
+    height: 36px;
+    margin: 0;
+  }
+}
+
+@media (max-width: 749px) {
+
+  .surrounding-div {
+    // height: 100%;
+    height: calc(100% - 36px);
+  }
+
+  .toggle-button {
+    height: 36px;
+    margin: 0;
+  }
+
+  .address-input {
+    position: absolute;
+    z-index: 1000;
     right: 10px;
     top: 90px;
-  }
-
-  .pl-alert {
-    height: 100% !important;
-  }
-
-  .pl-alert-body {
-    width: 100% !important;
-  }
-
-  .pl-alert-close-button {
-  color: lightgrey !important;
-
   }
 
   #demo-badge {
@@ -598,17 +549,6 @@ export default {
   #demo-container {
     padding-left: 15px;
     position: relative;
-  }
-
-  .pvc-download-data-button, .pvc-export-data-button {
-    visibility: hidden;
-    // clear:both;
-    // z-index: 999;
-    // top: 393px;
-  }
-
-  .leaflet-draw-actions {
-      left: 42px !important;
   }
 
   .logo {
@@ -656,41 +596,74 @@ export default {
   td div svg {
     float: right
   }
-
 }
 
-.step-group{
-  margin-left:$spacing-medium;
-
-  .step-label {
-    @include secondary-font(400);
-    display: inline-block;
-    margin-left: -$spacing-medium;
-    background: black;
-    border-radius: $spacing-extra-large;
-    color:white;
-    padding: 0 $spacing-small;
-    width:$spacing-large;
-    height:$spacing-large;
-    line-height: $spacing-large;
-    text-align: center;
-  }
-  .step{
-    margin-top: -$spacing-large;
-    padding-left: $spacing-large;
-    padding-bottom: $spacing-large;
-    border-left:1px solid black;
-
-    &:last-of-type {
-      border:none;
-    }
-
-    .step-title{
-      @include secondary-font(400);
-      font-size:1.2rem;
-      margin-bottom: $spacing-small;
-    }
-  }
-}
+// .step-group {
+//   margin-left:$spacing-medium;
+//
+//   .step-label {
+//     @include secondary-font(400);
+//     display: inline-block;
+//     margin-left: -$spacing-medium;
+//     background: black;
+//     border-radius: $spacing-extra-large;
+//     color:white;
+//     padding: 0 $spacing-small;
+//     width:$spacing-large;
+//     height:$spacing-large;
+//     line-height: $spacing-large;
+//     text-align: center;
+//   }
+//   .step {
+//     margin-top: -$spacing-large;
+//     padding-left: $spacing-large;
+//     padding-bottom: $spacing-large;
+//     border-left:1px solid black;
+//
+//     &:last-of-type {
+//       border:none;
+//     }
+//
+//     .step-title {
+//       @include secondary-font(400);
+//       font-size:1.2rem;
+//       margin-bottom: $spacing-small;
+//     }
+//   }
+// }
+//
+// .step-group{
+//   margin-left:$spacing-medium;
+//
+//   .step-label {
+//     @include secondary-font(400);
+//     display: inline-block;
+//     margin-left: -$spacing-medium;
+//     background: black;
+//     border-radius: $spacing-extra-large;
+//     color:white;
+//     padding: 0 $spacing-small;
+//     width:$spacing-large;
+//     height:$spacing-large;
+//     line-height: $spacing-large;
+//     text-align: center;
+//   }
+//   .step{
+//     margin-top: -$spacing-large;
+//     padding-left: $spacing-large;
+//     padding-bottom: $spacing-large;
+//     border-left:1px solid black;
+//
+//     &:last-of-type {
+//       border:none;
+//     }
+//
+//     .step-title{
+//       @include secondary-font(400);
+//       font-size:1.2rem;
+//       margin-bottom: $spacing-small;
+//     }
+//   }
+// }
 
 </style>

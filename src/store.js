@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import pvdStore from '@philly/vue-datafetch/src/store';
 import pvmStore from '@philly/vue-mapping/src/store';
-import pvcStore from '@philly/vue-comps/src/store';
+// import pvcStore from '@philly/vue-comps/src/store';
 import mergeDeep from './util/merge-deep';
 
 // when you load vuex from a script tag this seems to happen automatically
@@ -19,7 +19,7 @@ function createStore(config) {
       cycloOnly: false,
     },
     fullScreenMapEnabled: false,
-    fullScreenCycloEnabled: true,
+    fullScreenImageryEnabled: true,
     map: {
       zoom: 19,
     }
@@ -43,14 +43,14 @@ function createStore(config) {
       setFullScreenMapEnabled(state, payload) {
         state.fullScreenMapEnabled = payload;
       },
-      setFullScreenCycloEnabled(state, payload) {
-        state.fullScreenCycloEnabled = payload;
+      setfullScreenImageryEnabled(state, payload) {
+        state.fullScreenImageryEnabled = payload;
       },
     }
   };
 
-  let mergeStore = mergeDeep(pvcStore, pvdStore.store);
-  mergeStore = mergeDeep(mergeStore, pvmStore);
+  // let mergeStore = mergeDeep(pvcStore, pvdStore.store);
+  let mergeStore = mergeDeep(pvdStore.store, pvmStore);
   mergeStore = mergeDeep(mergeStore, mb);
 
   return new Vuex.Store({
