@@ -154,6 +154,7 @@
           v-if="shouldLoadPictometryWidget"
           v-show="true"
           @pictometry-widget-mounted="initializePictometry"
+          :set-location="true"
         >
           <full-screen-toggle-tab
             :event="'toggle-tab-click'"
