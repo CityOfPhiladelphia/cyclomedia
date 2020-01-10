@@ -396,6 +396,7 @@ export default {
       const { lat, lng } = center;
       const coords = [ lng, lat ];
 
+      const pictometryConfig = this.$config.pictometry || {};
       const cyclomediaConfig = this.$config.cyclomedia || {};
 
       if (pictometryConfig.enabled) {
