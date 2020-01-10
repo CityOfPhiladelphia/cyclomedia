@@ -246,7 +246,9 @@ export default {
     } else if (this.$route.query.lat) {
       this.$store.commit('setCyclomediaLatLngFromMap', [parseFloat(this.$route.query.lat), parseFloat(this.$route.query.lng)]);
     }
-    this.handleMapMove();
+
+    this.$store.commit('setPictometryMapCenter', this.$config.map.center);
+    // this.handleMapMove();
   },
   watch: {
     geocodeCoordinates(nextGeocodeCoordinates) {
@@ -387,7 +389,7 @@ export default {
       this.$controller.handleSearchFormSubmit(value);
     },
     handleMapMove(e) {
-      // console.log('handleMapMove is firing')
+      console.log('handleMapMove is starting');
       const map = this.$store.state.map.map;
       if (!map) {
         return;
@@ -395,6 +397,8 @@ export default {
       const center = map.getCenter();
       const { lat, lng } = center;
       const coords = [ lng, lat ];
+
+      console.log('handleMapMove is running, coords:', coords);
 
       const pictometryConfig = this.$config.pictometry || {};
       const cyclomediaConfig = this.$config.cyclomedia || {};
@@ -520,7 +524,7 @@ export default {
     position: absolute;
     z-index: 1000;
     right: 10px;
-    top: 100px;
+    top: 120px;
   }
 
   .toggle-button {
