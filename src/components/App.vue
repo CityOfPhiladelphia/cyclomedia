@@ -398,6 +398,14 @@ export default {
 
       const cyclomediaConfig = this.$config.cyclomedia || {};
 
+      if (pictometryConfig.enabled) {
+        // update state for pictometry
+        this.$store.commit('setPictometryMapCenter', coords);
+
+        const zoom = map.getZoom();
+        this.$store.commit('setPictometryMapZoom', zoom);
+      }
+
       if (cyclomediaConfig.enabled) {
         // update cyclo recordings
         this.updateCyclomediaRecordings();
