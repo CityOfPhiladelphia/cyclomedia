@@ -1,67 +1,69 @@
-import Vue from 'vue';
-import createStore from './store';
-import configMixin from './util/config-mixin';
-import eventBusMixin from './util/event-bus-mixin';
-// import Mapboard from './components/Mapboard';
-import CyclomediaWidget from './cyclomedia/CyclomediaWidget';
-import mergeDeep from './util/merge-deep';
 
-export default (clientConfig) => {
-  const baseConfigUrl = clientConfig.baseConfig;
+let pictApiKey, pictSecretKey;
+const host = window.location.hostname;
+if (host === 'atlas-dev.phila.gov.s3-website-us-east-1.amazonaws.com') {
+  pictApiKey = process.env.VUE_APP_ATLASDEV_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_ATLASDEV_PICTOMETRY_SECRET_KEY;
+} else {
+  pictApiKey = process.env.VUE_APP_PICTOMETRY_API_KEY;
+  pictSecretKey = process.env.VUE_APP_PICTOMETRY_SECRET_KEY;
+}
 
-  // create a global event bus used to proxy events to the mapboard host
-  Vue.use(eventBusMixin);
+import viewerboard from '@phila/viewerboard/src/main.js';
+// const baseConfigUrl = null;
+const baseConfigUrl = 'https://cdn.jsdelivr.net/gh/cityofphiladelphia/pde_base_config@3cb644750f4db8619a5b41f5369d1e280678f7bb/config.js';
 
-  // get base config
-  return $.ajax({
-    url: baseConfigUrl,
-    success(data) {
-      // parse raw js. yes, it's ok to use eval :)
-      // http://stackoverflow.com/a/87260/676001
-      const baseConfig = eval(data);
-
-      // deep merge base config and client config
-      //const config = mergeDeep(clientConfig, baseConfig);
-      const config = mergeDeep(baseConfig, clientConfig);
-
-      // make config accessible from each component via this.$config
-      Vue.use(configMixin, config);
-
-      // create store
-      const store = createStore(config);
-
-      // mount main vue
-      const vm = new Vue({
-        el: config.el || '#cyclomedia',
-        render: (h) => h(CyclomediaWidget),
-        store
-      });
-
-      // bind mapboard events to host app
-      const events = config.events || {};
-      for (let eventName of Object.keys(events)) {
-        const callback = events[eventName];
-        vm.$eventBus.$on(eventName, callback);
-      }
-
-      // event api for host apps
-      // this doesn't work now that we're getting the base config
-      // asynchronously. see above for workaround.
-      // REVIEW it would be nice to return the jquery ajax deferred and have the
-      // client app call .then() on it.
-      // return {
-      //   on(eventName, callback) {
-      //     vm.$eventBus.$on(eventName, callback);
-      //     return this;
-      //   },
-      //   off(eventName, callback) {
-      //     vm.$eventBus.$off(eventName, callback);
-      //     return this;
-      //   }
-      // };
+viewerboard({
+  app: {
+    title: 'Cyclomedia',
+    tagLine: '',
+  },
+  cyclomedia: {
+    enabled: true,
+    // orientation: 'vertical',
+    measurementAllowed: false,
+    popoutAble: true,
+    recordingsUrl: 'https://atlas.cyclomedia.com/Recordings/wfs',
+    username: process.env.VUE_APP_CYCLOMEDIA_USERNAME,
+    password: process.env.VUE_APP_CYCLOMEDIA_PASSWORD,
+    apiKey: process.env.VUE_APP_CYCLOMEDIA_API_KEY,
+  },
+  pictometry: {
+    enabled: false,
+    // orientation: 'horizontal',
+    iframeId: 'pictometry-ipa',
+    apiKey: pictApiKey,
+    secretKey: pictSecretKey,
+  },
+  geocoder: {
+    url: function (input) {
+      var inputEncoded = encodeURIComponent(input);
+      return 'https://api.phila.gov/ais/v1/search/' + inputEncoded;
     },
-    error(err) {
-      console.error('Error loading base config:', err);
-    }
-  });
-};
+    params: {
+      gatekeeperKey: process.env.VUE_APP_GATEKEEPER_KEY,
+      include_units: true,
+      opa_only: true,
+    },
+  },
+  geolocation: {
+    enabled: true,
+    icon: [ 'far', 'dot-circle' ],
+  },
+  router: {
+    enabled: true,
+    type: 'vue',
+  },
+  addressInput: {
+    width: 350,
+    mapWidth: 300,
+    // position: 'right',
+    autocompleteEnabled: false,
+    autocompleteMax: 15,
+    placeholder: 'Search for an address',
+  },
+  map: {
+    shouldInitialize: false,
+    zoom: 13,
+  },
+});
