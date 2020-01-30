@@ -10,12 +10,8 @@
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^0.1.9",
-    "@philly/vue-datafetch": "^1.0.0",
-    "@philly/vue-mapping": "https://github.com/CityOfPhiladelphia/phila-vue-mapping#db0e9b705dacac47ea5e4bc95c7ac7d5d347c43c",
-    "core-js": "^3.6.1",
-    "vue": "2.6.10",
-    "vue-router": "^3.0.6",
-    "vuex": "^3.1.2"
+    "@phila/viewerboard": "^0.0.1",
+    "vue": "2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.2",
