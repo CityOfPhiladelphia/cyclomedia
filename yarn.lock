@@ -800,23 +800,23 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@phila/viewerboard@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@phila/viewerboard/-/viewerboard-0.0.1.tgz#06109526535dc20a5f8b73e6ea6bd7fdcd7c17d1"
-  integrity sha512-vIL7eWJyJ+SZ+VFYd35y1jCbu3xmnsQCes6oHmksWBArg5JPQk+Cbkij/20BRZyi2oYxPXfXiBvaXydtef67Vg==
+"@phila/viewerboard@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@phila/viewerboard/-/viewerboard-0.0.2.tgz#32cffb44da060a412a2cf41c3754000ae9d23baf"
+  integrity sha512-y6Si456RrlYc1ayu8pKYZ/0VJYqOvA9gyayElKzbkgfSOu23Aeff4AVGhhPlYHaJEJdabCJIRDFzwJ8lsw+pOA==
   dependencies:
     "@fortawesome/vue-fontawesome" "^0.1.9"
-    "@philly/vue-datafetch" "^1.0.0"
-    "@philly/vue-mapping" "git+https://github.com/CityOfPhiladelphia/phila-vue-mapping.git#db0e9b705dacac47ea5e4bc95c7ac7d5d347c43c"
+    "@phila/vue-datafetch" "^1.1.7"
+    "@phila/vue-mapping" "^2.0.5"
     core-js "^3.6.1"
     vue "2.6.10"
     vue-router "^3.0.6"
     vuex "^3.1.2"
 
-"@philly/vue-datafetch@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@philly/vue-datafetch/-/vue-datafetch-1.0.0.tgz#f57d18c0307468434ea92c75aa0f3672540b9be1"
-  integrity sha512-QPprwXj3RDDVMaWHwCaGOFFCiX9bkpxS+Vo7gO2s+aq2mGDYG5s7M486jSSDCETCezcTVRAuDizqgl0U0nNtug==
+"@phila/vue-datafetch@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.1.7.tgz#87326143412a54f9f17b8cb86c6bf62c249233e3"
+  integrity sha512-pDh+rCtRQQ86l9Wp9LD1nbpvb9NY2fTau7dlaUxh/EJ98v4KDbIGBMZ0UaaefzWMtwsK1/vPrwjMPSxaMEuHEA==
   dependencies:
     "@turf/turf" "^5.1.6"
     axios "^0.19.0"
@@ -828,9 +828,10 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@philly/vue-mapping@git+https://github.com/CityOfPhiladelphia/phila-vue-mapping.git#db0e9b705dacac47ea5e4bc95c7ac7d5d347c43c":
-  version "2.0.2"
-  resolved "git+https://github.com/CityOfPhiladelphia/phila-vue-mapping.git#db0e9b705dacac47ea5e4bc95c7ac7d5d347c43c"
+"@phila/vue-mapping@^2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.0.5.tgz#c97f064bc6d5f95e555ca6ef60ec7c0c89b2cffd"
+  integrity sha512-tQjPAmsGmFbtsRw7GOiGWDL10BsiVXHDid+PvMVmNJUNZaA0fq6tb8lP0LJN8M90lxDYNRhDUDkPUNBIj2al8Q==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
