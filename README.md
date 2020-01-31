@@ -1,24 +1,8 @@
-# cyclomedia
+# cyclomedia.phila.gov
 
-_(work in progress)_
+This repo contains the source code for https://cyclomedia.phila.gov.
 
-Cyclomedia provides a pluggable Vue.js component for data-rich mapping applications.
+![Cyclomedia](https://mapboard-images.s3.amazonaws.com/viewerboard/cyclo.JPG)
+![CyclomediaWithMap](https://mapboard-images.s3.amazonaws.com/viewerboard/cyclo2.JPG)
 
-## Example
-
-See [Simple Example](examples/simple.index.html) for an intended usage of the API.
-
-## Build Setup
-
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+This app uses the framework [@phila/viewerboard](https://www.npmjs.com/package/@phila/viewerboard), so that it does not duplicate code with similar sites.
