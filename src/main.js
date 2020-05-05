@@ -10,8 +10,6 @@ if (host === 'atlas-dev.phila.gov.s3-website-us-east-1.amazonaws.com') {
 }
 
 import viewerboard from '@phila/viewerboard/src/main.js';
-// const baseConfigUrl = null;
-const baseConfigUrl = 'https://cdn.jsdelivr.net/gh/cityofphiladelphia/pde_base_config@3cb644750f4db8619a5b41f5369d1e280678f7bb/config.js';
 
 viewerboard({
   app: {
@@ -35,6 +33,7 @@ viewerboard({
     apiKey: pictApiKey,
     secretKey: pictSecretKey,
   },
+  initialView: ['imagery'],
   geocoder: {
     url: function (input) {
       var inputEncoded = encodeURIComponent(input);
@@ -63,7 +62,84 @@ viewerboard({
     placeholder: 'Search for an address',
   },
   map: {
+    type: 'leaflet',
+    containerClass: 'map-container',
+    containerClassWCyclo: 'map-container',
     shouldInitialize: false,
     zoom: 13,
   },
+  // mbStyle: {
+  //   version: 8,
+  //   sources: {
+  //     pwd: {
+  //       tiles: [
+  //         '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+  //       ],
+  //       type: 'raster',
+  //       tileSize: 256,
+  //     },
+  //   },
+  //   layers: [
+  //     {
+  //       id: 'pwd',
+  //       type: 'raster',
+  //       source: 'pwd',
+  //     },
+  //   ]
+  // },
+  // basemapSources: {
+  //   pwd: {
+  //     source: {
+  //       tiles: [
+  //         '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap/MapServer/tile/{z}/{y}/{x}',
+  //         // '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'
+  //       ],
+  //       type: 'raster',
+  //       tileSize: 256,
+  //     },
+  //     layer: {
+  //       id: 'pwd',
+  //       type: 'raster',
+  //     },
+  //   },
+  //   imagery2019: {
+  //     source: {
+  //       tiles: [
+  //         'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2019_3in/MapServer/tile/{z}/{y}/{x}',
+  //         // '//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'
+  //       ],
+  //       type: 'raster',
+  //       tileSize: 256,
+  //     },
+  //     layer: {
+  //       id: 'imagery2019',
+  //       type: 'raster',
+  //     },
+  //   },
+  // },
+  // basemapLabelSources:{
+  //   cityBasemapLabels: {
+  //     source: {
+  //       tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityBasemap_Labels/MapServer/tile/{z}/{y}/{x}'],
+  //       type: 'raster',
+  //       tileSize: 256,
+  //     },
+  //     layer: {
+  //       id: 'cityBasemapLabels',
+  //       type: 'raster',
+  //     },
+  //   },
+  //   imageryBasemapLabels: {
+  //     source: {
+  //       tiles: ['//tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_Labels/MapServer/tile/{z}/{y}/{x}'],
+  //       type: 'raster',
+  //       tileSize: 256,
+  //     },
+  //     layer: {
+  //       id: 'imageryBasemapLabels',
+  //       type: 'raster',
+  //     },
+  //   },
+  // },
+  // overlaySources: {},
 });
