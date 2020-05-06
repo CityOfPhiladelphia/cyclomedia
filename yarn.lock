@@ -850,14 +850,14 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@phila/viewerboard@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@phila/viewerboard/-/viewerboard-0.1.1.tgz#db2ca26b617fc4b4f1e7c208a6bdffaf57f7be0b"
-  integrity sha512-CzH/c9H9YLVm59qYgEoPeA64qjfa0+crEYDWiolvmcGmdZk5GF/Z6AkU4C2wOXQNq7JukLevQT7Y52UsJz6HFQ==
+"@phila/viewerboard@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@phila/viewerboard/-/viewerboard-0.1.2.tgz#d3c0bff41b9d55b8dda3eb70a1757b9f93f69d9a"
+  integrity sha512-V1WjK1rDxmryiI4W9U9Uf9gzNWTipvrrpzsTjURBs+ytquaB2faxvyPcPSE38RYbi6Ayq7L5arwFqx69Til9MQ==
   dependencies:
     "@fortawesome/vue-fontawesome" "^0.1.9"
     "@phila/vue-datafetch" "1.2.0"
-    "@phila/vue-mapping" "2.1.1"
+    "@phila/vue-mapping" "2.1.2"
     core-js "^3.6.1"
     vue "2.6.10"
     vue-router "^3.0.6"
@@ -878,10 +878,10 @@
     vue "^2.6.10"
     vuex "^3.1.2"
 
-"@phila/vue-mapping@2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.1.1.tgz#040014682c761f85105443ebd9097c426f7ff933"
-  integrity sha512-PBoe5fa/gG4d5YLWRODwdIBnuDQxTHVkL16y9+dbf6wY3CA2rPiuaBMhGWs6pwK0PKj8sUq/LjWkm8+wAaD7VA==
+"@phila/vue-mapping@2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.1.2.tgz#1d418dabc244a212535333817bb2229b14d0e791"
+  integrity sha512-uH/1jIYAHd570OuD9MIFSfePHc17ugbP1w0qrc3CwkPC4OlPYZfdBsqTUAb+V95WbZZSaIR1Uc6m5UGoaGIVAw==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
