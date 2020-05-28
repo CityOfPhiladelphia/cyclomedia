@@ -65,7 +65,7 @@ viewerboard({
     type: 'mapbox',
     containerClass: 'map-container',
     containerClassWCyclo: 'map-container',
-    center: [-75.174820, 39.961120],
+    center: [-75.163471, 39.953338],
     shouldInitialize: false,
     zoom: 13,
     minZoom: 11,
