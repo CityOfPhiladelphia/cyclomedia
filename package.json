@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^0.1.9",
-    "@phila/viewerboard": "https://github.com/CityOfPhiladelphia/viewerboard#2afda0271f770f1c1da03a6f29c52207954a4ab6",
-    "vue": "2.6.10"
+    "@phila/viewerboard": "0.1.5",
+    "vue": "^2.6.11"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.2",
@@ -20,6 +20,7 @@
     "node-sass": "^4.13.0",
     "sass": "^1.24.2",
     "sass-loader": "^7.1.0",
-    "vue-template-compiler": "2.6.10"
+    "vue-template-compiler": "^2.6.11",
+    "webpack-visualizer-plugin": "^0.1.11"
   }
 }
