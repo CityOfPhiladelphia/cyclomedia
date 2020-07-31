@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^0.1.9",
-    "@phila/viewerboard": "0.1.5",
+    "@phila/viewerboard": "0.1.6",
     "vue": "^2.6.11"
   },
   "devDependencies": {
