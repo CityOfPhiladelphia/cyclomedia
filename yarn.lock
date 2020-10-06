@@ -1018,23 +1018,23 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@phila/viewerboard@0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@phila/viewerboard/-/viewerboard-0.1.6.tgz#7811f345ff62047c3e074a50374ede2dc904a56a"
-  integrity sha512-ShJI5EJrGeVXUODQFqBfTB5ZmCpmI8648X9UClNP1NdNz7Ti9s7VAqhRJwLgpFeeL9jhds7LoQvg4i1AXvyziA==
+"@phila/viewerboard@0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@phila/viewerboard/-/viewerboard-0.1.8.tgz#2b7d785991f85eb4a93e18cbc1961f6e73f5600d"
+  integrity sha512-gtzybfki56rLwEE3ut83yjx+5SVL7qjyxzSNpKdiCXZPw8vUv2TG2ISFjIPemA0PXymzP6AS4nr7bRhNbMMSSg==
   dependencies:
     "@fortawesome/vue-fontawesome" "^0.1.9"
-    "@phila/vue-datafetch" "1.3.1"
-    "@phila/vue-mapping" "2.1.18"
+    "@phila/vue-datafetch" "1.4.2"
+    "@phila/vue-mapping" "2.2.8"
     core-js "^3.6.1"
     vue "^2.6.11"
     vue-router "^3.0.6"
     vuex "^3.5.1"
 
-"@phila/vue-datafetch@1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.3.1.tgz#4fd592f7d6f4a3ab0343a7ea472514f263a564dd"
-  integrity sha512-/Xy4rwywfVPafg6eu5OHAw5MAWq/ZqZ3f9I/NdeU73bmPgv71Uoj+uDYFXKGxNI878789OEwW+nCUnqqCJPcQg==
+"@phila/vue-datafetch@1.4.2":
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/@phila/vue-datafetch/-/vue-datafetch-1.4.2.tgz#508a5ac9748b1a6339776232b9a9f7c837d05428"
+  integrity sha512-M6tlcEGLDNUUBw2oCPiL3XHpAmtBjhhHrbaO8o27+WAgrVVx0gkIUI7BEwVooJUCVA/cGHdTvfy9tFQyUFelJg==
   dependencies:
     "@turf/turf" "^5.1.6"
     airtable "^0.8.1"
@@ -1044,13 +1044,13 @@
     https-proxy-agent "^3.0.1"
     leaflet "1.5.1"
     proj4 "^2.6.0"
-    vue "^2.6.10"
-    vuex "^3.1.2"
+    vue "^2.6.11"
+    vuex "^3.5.1"
 
-"@phila/vue-mapping@2.1.18":
-  version "2.1.18"
-  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.1.18.tgz#d5f8b6725036ec33c2a01b30fad3805290a2c682"
-  integrity sha512-WO0tTv/fyK69w4p3kJdbZK5k+lKR0Su8JUDliTF3c250p4CS2sbQ+c17ua4AX3D/431bQJhMN4Xg86qlGCrkHg==
+"@phila/vue-mapping@2.2.8":
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/@phila/vue-mapping/-/vue-mapping-2.2.8.tgz#0264c84b25eee242aacf565d7a1b39d2e22a7c1c"
+  integrity sha512-xhnUCo7qehp/xGPrm0R3Qyb34LYJ2Po8YCK2soHt0+8xSPEpYsaeocr1vSXLzLN27aBNzQu+FWc1RRGYNM0IlQ==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^1.2.15"
     "@fortawesome/free-regular-svg-icons" "^5.7.2"
@@ -1064,7 +1064,7 @@
     blueimp-md5 "^2.10.0"
     date-fns "^2.8.1"
     esri-leaflet "^2.3.1"
-    esri-leaflet-legend "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
+    esri-leaflet-legend "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8fc0a7949b1ce80340261167a1aa4302177bb380"
     esri-leaflet-renderers "2.0.6"
     leaflet "1.5.1"
     leaflet-easybutton "^2.3.0"
@@ -5035,9 +5035,9 @@ esrecurse@^4.1.0:
   dependencies:
     estraverse "^4.1.0"
 
-"esri-leaflet-legend@https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f":
+"esri-leaflet-legend@https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8fc0a7949b1ce80340261167a1aa4302177bb380":
   version "2.0.1"
-  resolved "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8d42cbc1ed71c630fd8f9c6795877b5f7498b49f"
+  resolved "https://github.com/CityOfPhiladelphia/esri-leaflet-legend#8fc0a7949b1ce80340261167a1aa4302177bb380"
   dependencies:
     esri-leaflet "^2.2.3"
     leaflet "^1.4.0"
@@ -10717,12 +10717,12 @@ vue-template-es2015-compiler@^1.9.0:
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz#1ee3bc9a16ecbf5118be334bb15f9c46f82f5825"
   integrity sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==
 
-vue@^2.6.10, vue@^2.6.11:
+vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
 
-vuex@^3.1.2, vuex@^3.5.1:
+vuex@^3.5.1:
   version "3.5.1"
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.5.1.tgz#f1b8dcea649bc25254cf4f4358081dbf5da18b3d"
   integrity sha512-w7oJzmHQs0FM9LXodfskhw9wgKBiaB+totOdb8sNzbTB2KDCEEwEs29NzBZFh/lmEK1t5tDmM1vtsO7ubG1DFw==
