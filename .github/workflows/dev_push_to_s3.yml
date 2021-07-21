@@ -32,7 +32,7 @@ jobs:
         VUE_APP_CYCLOMEDIA_PASSWORD: ${{ secrets.VUE_APP_CYCLOMEDIA_PASSWORD }}
         VUE_APP_CYCLOMEDIA_USERNAME: ${{ secrets.VUE_APP_CYCLOMEDIA_USERNAME }}
 
-    - name: Deploy to Prod s3
+    - name: Deploy to Dev s3
       run: |
         aws s3 sync dist s3://$AWS_S3_BUCKET --region us-east-1 --delete
       env:
