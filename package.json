@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^0.1.9",
-    "@phila/viewerboard": "0.1.9",
+    "@phila/viewerboard": "https://github.com/CityOfPhiladelphia/viewerboard#7a5c983fde425833f949760a2651c01bc0e69a5d",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -22,5 +22,8 @@
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.6.11",
     "webpack-visualizer-plugin": "^0.1.11"
+  },
+  "engines": {
+    "yarn": "YARN NO LONGER USED - use npm instead."
   }
 }
