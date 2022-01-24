@@ -1,6 +1,6 @@
 name: Example workflow using Snyk
 on:
-  pull_request:
+  push:
     branches:
       - test-security
 jobs:
