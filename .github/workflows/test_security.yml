@@ -15,6 +15,6 @@ jobs:
       - name: Snyk test for UI
         run: |
            snyk test --all-projects
-        continue-on-error: true
+        continue-on-error: false
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

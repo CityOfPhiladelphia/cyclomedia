@@ -6,11 +6,12 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "dev-build": "vue-cli-service build --mode development"
+    "dev-build": "vue-cli-service build --mode development",
+    "test": "snyk test"
   },
   "dependencies": {
     "@fortawesome/vue-fontawesome": "^0.1.9",
-    "@phila/viewerboard": "1.0.0",
+    "@phila/viewerboard": "^1.0.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {
@@ -20,6 +21,7 @@
     "node-sass": "^4.13.0",
     "sass": "^1.24.2",
     "sass-loader": "^7.1.0",
+    "snyk": "^1.836.0",
     "vue-template-compiler": "^2.6.11",
     "webpack-visualizer-plugin": "^0.1.11"
   },
