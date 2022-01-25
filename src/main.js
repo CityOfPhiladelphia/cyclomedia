@@ -16,7 +16,7 @@ import viewerboard from '@phila/viewerboard/src/main.js';
 
 viewerboard({
   app: {
-    title: 'Cyclomedia',
+    title: 'Cyclomedia Dev',
     tagLine: '',
   },
   cyclomedia: {
