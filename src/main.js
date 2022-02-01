@@ -11,12 +11,11 @@ if (host === 'atlas-dev.phila.gov.s3-website-us-east-1.amazonaws.com') {
 
 // import Query from 'esri-leaflet';
 
-
 import viewerboard from '@phila/viewerboard/src/main.js';
 
 viewerboard({
   app: {
-    title: 'Cyclomedia Dev test 03',
+    title: 'Cyclomedia Dev test 04',
     tagLine: '',
   },
   cyclomedia: {
