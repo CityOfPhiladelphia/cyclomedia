@@ -9,7 +9,6 @@ if (host === 'atlas-dev.phila.gov.s3-website-us-east-1.amazonaws.com') {
   pictSecretKey = process.env.VUE_APP_PICTOMETRY_SECRET_KEY;
 }
 
-
 // import Query from 'esri-leaflet';
 
 import viewerboard from '@phila/viewerboard/src/main.js';
