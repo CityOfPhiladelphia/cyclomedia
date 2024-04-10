@@ -73,6 +73,7 @@ viewerboard({
     minZoom: 11,
     maxZoom: 25,
     basemapToggle: true,
+    imagery: 'imagery2023',
   },
   mbStyle: {
     version: 8,
@@ -108,16 +109,16 @@ viewerboard({
         type: 'raster',
       },
     },
-    imagery2022: {
+    imagery2023: {
       source: {
         tiles: [
-          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2022_2in/MapServer/tile/{z}/{y}/{x}',
+          'https://tiles.arcgis.com/tiles/fLeGjb7u4uXqeF9q/arcgis/rest/services/CityImagery_2023/MapServer/tile/{z}/{y}/{x}',
         ],
         type: 'raster',
         tileSize: 256,
       },
       layer: {
-        id: 'imagery2022',
+        id: 'imagery2023',
         type: 'raster',
       },
     },
